@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TaskManager.Dto
+﻿namespace TaskManager.Dto
 {
     public class Desk : AbstractModel
     {
         public bool IsPrivate { get; set; }
         public string? Columns { get; set; }
-        public User? AdminDesk { get; set; }
+
+        public int AdminId { get; set; }
+        //public User Admin { get; set; }
+
+        public int ProjectId { get; set; }
+        public Project Project { get; set; }
+
+        public List<Task> Tasks = new List<Task>();
     }
 }

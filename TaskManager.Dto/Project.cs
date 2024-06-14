@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TaskManager.Dto
+﻿namespace TaskManager.Dto
 {
     public class Project : AbstractModel
     {
-        public List<User>? Users { get; set; }
-        public List<User>? Desks { get; set; }
+        public int AdminId { get; set; }
+        //public User Admin { get; set; }
+
+        public StatusCode Status { get; set; }
+        
+        public List<User> Users { get; set; } = new List<User>();
+        public List<Desk> Desks { get; set; } = new List<Desk>();
     }
 }
