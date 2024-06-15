@@ -18,8 +18,4 @@
     <ProjectReference Include="..\TaskManager.Dto\TaskManager.Dto.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Config\" />
-  </ItemGroup>
-
 </Project>

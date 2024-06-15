@@ -4,7 +4,7 @@
     {
         Viewer,
         Editor,
-        ProjectAdmin,
+        Admin,
         SystemOwner
     }
 }

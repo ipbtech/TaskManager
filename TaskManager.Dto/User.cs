@@ -1,6 +1,4 @@
-﻿using TaskManager.Dto.Helper;
-
-namespace TaskManager.Dto
+﻿namespace TaskManager.Dto
 {
     public class User
     {
@@ -15,24 +13,15 @@ namespace TaskManager.Dto
         public DateTime LastLoginDate { get; set; }
         public byte[]? Avatar { get; set; }
 
-        public List<Project> Projects { get; set; } = new List<Project>();
+        public List<Project> AdminProjects { get; set; } = new List<Project>();
+        public List<UserProjectLink> UserProjects { get; set; } = new List<UserProjectLink>();
         public List<Desk> Desks { get; set; } = new List<Desk>();
-        public List<Task> Tasks { get; set; } = new List<Task>();
+        public List<Task> AssigningTasks { get; set; } = new List<Task>();
+        public List<Task> CreatingTasks { get; set; } = new List<Task>();
 
 
-        public User() { }
-
-        public User(string name, string surname, string email, string password, 
-                    UserRole role = UserRole.Viewer, string? phone = null, byte[]? avatar = null)
+        public User() 
         {
-            FirstName = name;
-            LastName = surname;
-            Email = email;
-            Password = password.HashSha256();
-            Role = role;
-            Phone = phone;
-            Avatar = avatar;
-
             RegistrDate = DateTime.Now;
         }
     }

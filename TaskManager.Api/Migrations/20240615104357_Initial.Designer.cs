@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManager.Dal;
 
@@ -11,9 +12,11 @@ using TaskManager.Dal;
 namespace TaskManager.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240615104357_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,8 +246,8 @@ namespace TaskManager.Api.Migrations
                             FirstName = "admin",
                             LastLoginDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastName = "admin",
-                            Password = "65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5",
-                            RegistrDate = new DateTime(2024, 6, 15, 13, 52, 23, 208, DateTimeKind.Local).AddTicks(1450),
+                            Password = "qwerty",
+                            RegistrDate = new DateTime(2024, 6, 15, 13, 43, 56, 647, DateTimeKind.Local).AddTicks(9773),
                             Role = 3
                         });
                 });
