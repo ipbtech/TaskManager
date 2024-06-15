@@ -1,4 +1,4 @@
-﻿namespace TaskManager.Dto
+﻿namespace TaskManager.Domain
 {
     public class Desk : AbstractModel
     {
@@ -11,7 +11,7 @@
         public int ProjectId { get; set; }
         public Project? Project { get; set; }
 
-        public List<Task> Tasks { get; set; } = new List<Task>();
+        public List<WorkTask> Tasks { get; set; } = new List<WorkTask>();
 
         public Desk() : base() { }
     }

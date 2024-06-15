@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TaskManager.Dto;
+using TaskManager.Domain;
 
 namespace TaskManager.Dal.Config
 {
@@ -22,13 +22,6 @@ namespace TaskManager.Dal.Config
             builder.HasOne(proj => proj.Admin).WithMany(user => user.AdminProjects)
                 .HasPrincipalKey(user => user.Id).HasForeignKey(proj => proj.AdminId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            //builder.HasMany(proj => proj.Users).WithMany(user => user.Projects)
-            //    .UsingEntity<UserProjectLink>(entity =>
-            //    {
-            //        entity.ToTable("user_project");
-            //        entity.HasOne(e => e.User).WithMany(e => e.Projects)
-            //    });
         }
     }
 }

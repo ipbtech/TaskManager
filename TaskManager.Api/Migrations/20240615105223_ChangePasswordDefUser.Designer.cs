@@ -122,7 +122,7 @@ namespace TaskManager.Api.Migrations
                     b.ToTable("projects", (string)null);
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.Task", b =>
+            modelBuilder.Entity("TaskManager.Dto.WorkTask", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -308,7 +308,7 @@ namespace TaskManager.Api.Migrations
                     b.Navigation("Admin");
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.Task", b =>
+            modelBuilder.Entity("TaskManager.Dto.WorkTask", b =>
                 {
                     b.HasOne("TaskManager.Dto.User", "Contractor")
                         .WithMany("AssigningTasks")

@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Task = TaskManager.Dto.Task;
+using TaskManager.Domain;
 
 namespace TaskManager.Dal.Config
 {
-    public class TaskDbConfig : IEntityTypeConfiguration<Task>
+    public class TaskDbConfig : IEntityTypeConfiguration<WorkTask>
     {
-        public void Configure(EntityTypeBuilder<Task> builder)
+        public void Configure(EntityTypeBuilder<WorkTask> builder)
         {
             builder.Property(task => task.Id).HasColumnName("id").ValueGeneratedOnAdd().IsRequired();
             builder.Property(task => task.Name).HasColumnName("name").HasMaxLength(50).IsRequired();

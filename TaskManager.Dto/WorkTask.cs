@@ -1,6 +1,6 @@
-﻿namespace TaskManager.Dto
+﻿namespace TaskManager.Domain
 {
-    public class Task : AbstractModel
+    public class WorkTask : AbstractModel
     {
         public int? DeskId { get; set; }
         public Desk? Desk { get; set; }
@@ -14,6 +14,6 @@
         public int? ContractorId { get; set; }
         public User? Contractor { get; set; }
 
-        public Task() : base() { }
+        public WorkTask() : base() { }
     }
 }

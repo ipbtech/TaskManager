@@ -12,8 +12,8 @@ using TaskManager.Dal;
 namespace TaskManager.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240615104357_Initial")]
-    partial class Initial
+    [Migration("20240615205253_RenameTask")]
+    partial class RenameTask
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace TaskManager.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TaskManager.Dto.Desk", b =>
+            modelBuilder.Entity("TaskManager.Domain.Desk", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,7 +72,7 @@ namespace TaskManager.Api.Migrations
                     b.ToTable("desks", (string)null);
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.Project", b =>
+            modelBuilder.Entity("TaskManager.Domain.Project", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -122,68 +122,7 @@ namespace TaskManager.Api.Migrations
                     b.ToTable("projects", (string)null);
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.WorkTask", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<byte[]>("AttachmentsData")
-                        .HasColumnType("varbinary(max)")
-                        .HasColumnName("attachments");
-
-                    b.Property<string>("ColumnOfDesk")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("column");
-
-                    b.Property<int?>("ContractorId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("create_date");
-
-                    b.Property<int?>("CreatorId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
-                        .HasColumnName("description");
-
-                    b.Property<int?>("DeskId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("end_date");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("name");
-
-                    b.Property<DateTime?>("StartDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("start_date");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ContractorId");
-
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex("DeskId");
-
-                    b.ToTable("tasks", (string)null);
-                });
-
-            modelBuilder.Entity("TaskManager.Dto.User", b =>
+            modelBuilder.Entity("TaskManager.Domain.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -246,13 +185,13 @@ namespace TaskManager.Api.Migrations
                             FirstName = "admin",
                             LastLoginDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastName = "admin",
-                            Password = "qwerty",
-                            RegistrDate = new DateTime(2024, 6, 15, 13, 43, 56, 647, DateTimeKind.Local).AddTicks(9773),
+                            Password = "65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5",
+                            RegistrDate = new DateTime(2024, 6, 15, 23, 52, 53, 35, DateTimeKind.Local).AddTicks(809),
                             Role = 3
                         });
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.UserProjectLink", b =>
+            modelBuilder.Entity("TaskManager.Domain.UserProjectLink", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -278,15 +217,76 @@ namespace TaskManager.Api.Migrations
                     b.ToTable("users_projects", (string)null);
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.Desk", b =>
+            modelBuilder.Entity("TaskManager.Domain.WorkTask", b =>
                 {
-                    b.HasOne("TaskManager.Dto.User", "DeskOwner")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("AttachmentsData")
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("attachments");
+
+                    b.Property<string>("ColumnOfDesk")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("column");
+
+                    b.Property<int?>("ContractorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("create_date");
+
+                    b.Property<int?>("CreatorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("description");
+
+                    b.Property<int?>("DeskId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("end_date");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("start_date");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContractorId");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("DeskId");
+
+                    b.ToTable("tasks", (string)null);
+                });
+
+            modelBuilder.Entity("TaskManager.Domain.Desk", b =>
+                {
+                    b.HasOne("TaskManager.Domain.User", "DeskOwner")
                         .WithMany("Desks")
                         .HasForeignKey("DeskOwnerId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("TaskManager.Dto.Project", "Project")
+                    b.HasOne("TaskManager.Domain.Project", "Project")
                         .WithMany("Desks")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -297,9 +297,9 @@ namespace TaskManager.Api.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.Project", b =>
+            modelBuilder.Entity("TaskManager.Domain.Project", b =>
                 {
-                    b.HasOne("TaskManager.Dto.User", "Admin")
+                    b.HasOne("TaskManager.Domain.User", "Admin")
                         .WithMany("AdminProjects")
                         .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -308,19 +308,38 @@ namespace TaskManager.Api.Migrations
                     b.Navigation("Admin");
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.WorkTask", b =>
+            modelBuilder.Entity("TaskManager.Domain.UserProjectLink", b =>
                 {
-                    b.HasOne("TaskManager.Dto.User", "Contractor")
+                    b.HasOne("TaskManager.Domain.Project", "Project")
+                        .WithMany("ProjectUsers")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.HasOne("TaskManager.Domain.User", "User")
+                        .WithMany("UserProjects")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TaskManager.Domain.WorkTask", b =>
+                {
+                    b.HasOne("TaskManager.Domain.User", "Contractor")
                         .WithMany("AssigningTasks")
                         .HasForeignKey("ContractorId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("TaskManager.Dto.User", "Creator")
+                    b.HasOne("TaskManager.Domain.User", "Creator")
                         .WithMany("CreatingTasks")
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("TaskManager.Dto.Desk", "Desk")
+                    b.HasOne("TaskManager.Domain.Desk", "Desk")
                         .WithMany("Tasks")
                         .HasForeignKey("DeskId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -332,38 +351,19 @@ namespace TaskManager.Api.Migrations
                     b.Navigation("Desk");
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.UserProjectLink", b =>
-                {
-                    b.HasOne("TaskManager.Dto.Project", "Project")
-                        .WithMany("ProjectUsers")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.HasOne("TaskManager.Dto.User", "User")
-                        .WithMany("UserProjects")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.Navigation("Project");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TaskManager.Dto.Desk", b =>
+            modelBuilder.Entity("TaskManager.Domain.Desk", b =>
                 {
                     b.Navigation("Tasks");
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.Project", b =>
+            modelBuilder.Entity("TaskManager.Domain.Project", b =>
                 {
                     b.Navigation("Desks");
 
                     b.Navigation("ProjectUsers");
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.User", b =>
+            modelBuilder.Entity("TaskManager.Domain.User", b =>
                 {
                     b.Navigation("AdminProjects");
 

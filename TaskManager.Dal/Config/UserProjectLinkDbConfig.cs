@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TaskManager.Dto;
+using TaskManager.Domain;
 
 namespace TaskManager.Dal.Config
 {

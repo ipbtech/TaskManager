@@ -1,4 +1,4 @@
-﻿namespace TaskManager.Dto
+﻿namespace TaskManager.Domain
 {
     public class UserProjectLink
     {

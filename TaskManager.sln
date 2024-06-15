@@ -5,9 +5,9 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.Api", "TaskManager.Api\TaskManager.Api.csproj", "{48150FC0-C65E-4C0D-B674-2F5F37724E85}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.Dto", "TaskManager.Dto\TaskManager.Dto.csproj", "{97ADC9CF-8C39-4C90-8218-FA04B92C7A71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.Domain", "TaskManager.Dto\TaskManager.Domain.csproj", "{97ADC9CF-8C39-4C90-8218-FA04B92C7A71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.Dal", "TaskManager.Dal\TaskManager.Dal.csproj", "{0661D306-E54A-4A67-8184-D51866951C14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.Dal", "TaskManager.Dal\TaskManager.Dal.csproj", "{0661D306-E54A-4A67-8184-D51866951C14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

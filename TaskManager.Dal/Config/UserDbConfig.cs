@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TaskManager.Dto;
-using TaskManager.Dto.Helper;
+using TaskManager.Domain;
 
 namespace TaskManager.Dal.Config
 {
@@ -19,16 +18,13 @@ namespace TaskManager.Dal.Config
             builder.Property(u => u.LastLoginDate).HasColumnName("lastlogin_date").IsRequired();
             builder.Property(u => u.Avatar).HasColumnName("avatar");
 
-            //builder.HasMany(u => u.Projects).WithMany(p => p.Users)
-            //    .UsingEntity(l => l.ToTable("users_projects"));
-
             builder.HasData(new User()
             {
                 Id = 1,
                 FirstName = "admin",
                 LastName = "admin",
                 Email = "admin@admin.com",
-                Password = ("qwerty").HashSha256(),
+                Password = "qwerty",
                 Role = UserRole.SystemOwner
             });
         }
