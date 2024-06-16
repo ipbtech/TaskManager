@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TaskManager.Api.Services;
 using TaskManager.Dal;
 using TaskManager.Dal.Repository;
 using TaskManager.Domain;
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.AddScoped<IRepository<User>, UserRepository>();
+builder.Services.AddScoped<UserService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

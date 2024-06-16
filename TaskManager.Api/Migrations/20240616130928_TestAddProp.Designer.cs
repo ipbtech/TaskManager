@@ -12,8 +12,8 @@ using TaskManager.Dal;
 namespace TaskManager.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240615205253_RenameTask")]
-    partial class RenameTask
+    [Migration("20240616130928_TestAddProp")]
+    partial class TestAddProp
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -146,6 +146,11 @@ namespace TaskManager.Api.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("name");
 
+                    b.Property<string>("HashPassword")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("hash_password");
+
                     b.Property<DateTime>("LastLoginDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("lastlogin_date");
@@ -158,12 +163,11 @@ namespace TaskManager.Api.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("password");
 
                     b.Property<string>("Phone")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("phone");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("RegistrDate")
                         .HasColumnType("datetime2")
@@ -172,6 +176,9 @@ namespace TaskManager.Api.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int")
                         .HasColumnName("role");
+
+                    b.Property<string>("TestProp")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -183,10 +190,11 @@ namespace TaskManager.Api.Migrations
                             Id = 1,
                             Email = "admin@admin.com",
                             FirstName = "admin",
+                            HashPassword = "qwerty",
                             LastLoginDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastName = "admin",
-                            Password = "65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5",
-                            RegistrDate = new DateTime(2024, 6, 15, 23, 52, 53, 35, DateTimeKind.Local).AddTicks(809),
+                            Password = "qwerty",
+                            RegistrDate = new DateTime(2024, 6, 16, 16, 9, 28, 350, DateTimeKind.Local).AddTicks(7202),
                             Role = 3
                         });
                 });

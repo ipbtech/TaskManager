@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TaskManager.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class ResetInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,8 +20,9 @@ namespace TaskManager.Api.Migrations
                     name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     surname = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    phone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    hash_password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     role = table.Column<int>(type: "int", nullable: false),
                     registr_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     lastlogin_date = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -152,8 +153,8 @@ namespace TaskManager.Api.Migrations
 
             migrationBuilder.InsertData(
                 table: "users",
-                columns: new[] { "id", "avatar", "email", "name", "lastlogin_date", "surname", "Password", "phone", "registr_date", "role" },
-                values: new object[] { 1, null, "admin@admin.com", "admin", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin", "qwerty", null, new DateTime(2024, 6, 15, 13, 43, 56, 647, DateTimeKind.Local).AddTicks(9773), 3 });
+                columns: new[] { "id", "avatar", "email", "name", "hash_password", "lastlogin_date", "surname", "password", "Phone", "registr_date", "role" },
+                values: new object[] { 1, null, "admin@admin.com", "admin", "qwerty", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin", "qwerty", null, new DateTime(2024, 6, 16, 16, 5, 29, 96, DateTimeKind.Local).AddTicks(1435), 3 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_desks_DeskOwnerId",

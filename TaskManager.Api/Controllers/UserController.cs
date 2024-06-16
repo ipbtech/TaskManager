@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using TaskManager.Api.Dto;
 using TaskManager.Api.Services;
 using TaskManager.Dal.Repository;
@@ -9,19 +10,13 @@ namespace TaskManager.Api.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IRepository<User> _usersRepo;
+        private readonly UserService _userService;
 
-        public UserController(IRepository<User> repository)
+        public UserController(UserService userService)
         {
-            _usersRepo = repository;
+            _userService = userService;
         }
 
-        [HttpGet]
-        [Route("api/user/test")]
-        public IActionResult Test()
-        {
-            return Ok("Hello world!");
-        }
 
         [HttpPost]
         [Route("api/user/create")]
@@ -29,10 +24,13 @@ namespace TaskManager.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _usersRepo.Create(user.FromDto());
-                return Ok();
+                bool isCreated = await _userService.Create(user);
+                if (isCreated)
+                    return Ok();
+                else
+                    return BadRequest("User with this email already exist");
             }
-            return BadRequest();
+            return BadRequest("Model is invalid");
         }
     }
 }

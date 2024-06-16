@@ -12,8 +12,8 @@ using TaskManager.Dal;
 namespace TaskManager.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240615105223_ChangePasswordDefUser")]
-    partial class ChangePasswordDefUser
+    [Migration("20240616130529_ResetInit")]
+    partial class ResetInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace TaskManager.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TaskManager.Dto.Desk", b =>
+            modelBuilder.Entity("TaskManager.Domain.Desk", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,7 +72,7 @@ namespace TaskManager.Api.Migrations
                     b.ToTable("desks", (string)null);
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.Project", b =>
+            modelBuilder.Entity("TaskManager.Domain.Project", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -122,7 +122,107 @@ namespace TaskManager.Api.Migrations
                     b.ToTable("projects", (string)null);
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.WorkTask", b =>
+            modelBuilder.Entity("TaskManager.Domain.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("Avatar")
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("avatar");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("HashPassword")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("hash_password");
+
+                    b.Property<DateTime>("LastLoginDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("lastlogin_date");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("surname");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("password");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RegistrDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("registr_date");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int")
+                        .HasColumnName("role");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "admin@admin.com",
+                            FirstName = "admin",
+                            HashPassword = "qwerty",
+                            LastLoginDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "admin",
+                            Password = "qwerty",
+                            RegistrDate = new DateTime(2024, 6, 16, 16, 5, 29, 96, DateTimeKind.Local).AddTicks(1435),
+                            Role = 3
+                        });
+                });
+
+            modelBuilder.Entity("TaskManager.Domain.UserProjectLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int")
+                        .HasColumnName("project_id");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("users_projects", (string)null);
+                });
+
+            modelBuilder.Entity("TaskManager.Domain.WorkTask", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -183,110 +283,15 @@ namespace TaskManager.Api.Migrations
                     b.ToTable("tasks", (string)null);
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.User", b =>
+            modelBuilder.Entity("TaskManager.Domain.Desk", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<byte[]>("Avatar")
-                        .HasColumnType("varbinary(max)")
-                        .HasColumnName("avatar");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("email");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("name");
-
-                    b.Property<DateTime>("LastLoginDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("lastlogin_date");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("surname");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("phone");
-
-                    b.Property<DateTime>("RegistrDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("registr_date");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("int")
-                        .HasColumnName("role");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("users", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "admin@admin.com",
-                            FirstName = "admin",
-                            LastLoginDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastName = "admin",
-                            Password = "65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5",
-                            RegistrDate = new DateTime(2024, 6, 15, 13, 52, 23, 208, DateTimeKind.Local).AddTicks(1450),
-                            Role = 3
-                        });
-                });
-
-            modelBuilder.Entity("TaskManager.Dto.UserProjectLink", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int")
-                        .HasColumnName("project_id");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("users_projects", (string)null);
-                });
-
-            modelBuilder.Entity("TaskManager.Dto.Desk", b =>
-                {
-                    b.HasOne("TaskManager.Dto.User", "DeskOwner")
+                    b.HasOne("TaskManager.Domain.User", "DeskOwner")
                         .WithMany("Desks")
                         .HasForeignKey("DeskOwnerId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("TaskManager.Dto.Project", "Project")
+                    b.HasOne("TaskManager.Domain.Project", "Project")
                         .WithMany("Desks")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -297,9 +302,9 @@ namespace TaskManager.Api.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.Project", b =>
+            modelBuilder.Entity("TaskManager.Domain.Project", b =>
                 {
-                    b.HasOne("TaskManager.Dto.User", "Admin")
+                    b.HasOne("TaskManager.Domain.User", "Admin")
                         .WithMany("AdminProjects")
                         .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -308,19 +313,38 @@ namespace TaskManager.Api.Migrations
                     b.Navigation("Admin");
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.WorkTask", b =>
+            modelBuilder.Entity("TaskManager.Domain.UserProjectLink", b =>
                 {
-                    b.HasOne("TaskManager.Dto.User", "Contractor")
+                    b.HasOne("TaskManager.Domain.Project", "Project")
+                        .WithMany("ProjectUsers")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.HasOne("TaskManager.Domain.User", "User")
+                        .WithMany("UserProjects")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TaskManager.Domain.WorkTask", b =>
+                {
+                    b.HasOne("TaskManager.Domain.User", "Contractor")
                         .WithMany("AssigningTasks")
                         .HasForeignKey("ContractorId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("TaskManager.Dto.User", "Creator")
+                    b.HasOne("TaskManager.Domain.User", "Creator")
                         .WithMany("CreatingTasks")
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("TaskManager.Dto.Desk", "Desk")
+                    b.HasOne("TaskManager.Domain.Desk", "Desk")
                         .WithMany("Tasks")
                         .HasForeignKey("DeskId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -332,38 +356,19 @@ namespace TaskManager.Api.Migrations
                     b.Navigation("Desk");
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.UserProjectLink", b =>
-                {
-                    b.HasOne("TaskManager.Dto.Project", "Project")
-                        .WithMany("ProjectUsers")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.HasOne("TaskManager.Dto.User", "User")
-                        .WithMany("UserProjects")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.Navigation("Project");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TaskManager.Dto.Desk", b =>
+            modelBuilder.Entity("TaskManager.Domain.Desk", b =>
                 {
                     b.Navigation("Tasks");
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.Project", b =>
+            modelBuilder.Entity("TaskManager.Domain.Project", b =>
                 {
                     b.Navigation("Desks");
 
                     b.Navigation("ProjectUsers");
                 });
 
-            modelBuilder.Entity("TaskManager.Dto.User", b =>
+            modelBuilder.Entity("TaskManager.Domain.User", b =>
                 {
                     b.Navigation("AdminProjects");
 

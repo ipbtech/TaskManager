@@ -13,7 +13,8 @@ namespace TaskManager.Api.Services
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Email = dto.Email,
-                Password = dto.Password.HashSha256(),
+                Password = dto.Password,
+                HashPassword = dto.Password.HashSha256(),
                 Phone = dto.Phone,
                 Role = (Domain.UserRole)dto.Role
             };
