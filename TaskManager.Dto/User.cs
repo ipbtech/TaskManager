@@ -12,7 +12,6 @@
         public UserRole Role { get; set; }
         public DateTime RegistrDate { get; set; }
         public DateTime LastLoginDate { get; set; }
-        public byte[]? Avatar { get; set; }
 
         public List<Project> AdminProjects { get; set; } = new List<Project>();
         public List<UserProjectLink> UserProjects { get; set; } = new List<UserProjectLink>();

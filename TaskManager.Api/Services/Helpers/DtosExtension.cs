@@ -1,8 +1,7 @@
 ﻿using TaskManager.Api.Dto;
-using TaskManager.Api.Services.Helpers;
 using TaskManager.Domain;
 
-namespace TaskManager.Api.Services
+namespace TaskManager.Api.Services.Helpers
 {
     public static class DtosExtension
     {
@@ -22,7 +21,16 @@ namespace TaskManager.Api.Services
 
         public static UserDto ToDto(this User model)
         {
-            return new UserDto();
+            return new UserDto()
+            {
+                Id = model.Id,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                Password = null,
+                Phone = model.Phone,
+                Role = (Dto.UserRole)model.Role
+            };
         }
     }
 }
