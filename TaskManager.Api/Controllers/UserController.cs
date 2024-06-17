@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TaskManager.Api.Dto;
 using TaskManager.Api.Services;
+using TaskManager.DTO.User;
 
 namespace TaskManager.Api.Controllers
 {
@@ -16,6 +16,7 @@ namespace TaskManager.Api.Controllers
         }
 
 
+
         [HttpGet("get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -25,6 +26,7 @@ namespace TaskManager.Api.Controllers
             else
                 return NotFound("User not found");
         }
+
 
         [HttpGet("get")]
         public async Task<IActionResult> Get()
@@ -37,9 +39,8 @@ namespace TaskManager.Api.Controllers
         }
 
 
-
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] UserDto user)
+        public async Task<IActionResult> Create([FromBody] UserCreateDto user)
         {
             if (ModelState.IsValid)
             {
@@ -52,8 +53,9 @@ namespace TaskManager.Api.Controllers
             return BadRequest("Model is invalid");
         }
 
+
         [HttpPost("create/multiple")]
-        public async Task<IActionResult> CreateMultiple([FromBody] List<UserDto> userDtos)
+        public async Task<IActionResult> CreateMultiple([FromBody] List<UserCreateDto> userDtos)
         {
             if (ModelState.IsValid)
             {
@@ -66,8 +68,9 @@ namespace TaskManager.Api.Controllers
             return BadRequest("Model is invalid");
         }
 
+
         [HttpPatch("update/{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UserDto user)
+        public async Task<IActionResult> Update(int id, [FromBody] UserUpdateDto user)
         {
             if (ModelState.IsValid)
             {
@@ -80,6 +83,7 @@ namespace TaskManager.Api.Controllers
             }
             return BadRequest("Model is invalid");
         }
+
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(int id)

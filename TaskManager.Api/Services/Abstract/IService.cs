@@ -1,4 +1,4 @@
-﻿using TaskManager.Api.Dto.Base;
+﻿using TaskManager.API.Services.Base;
 
 namespace TaskManager.Api.Services
 {
@@ -8,6 +8,6 @@ namespace TaskManager.Api.Services
         public Task<bool> Delete(int id);
         public Task<BaseResponce<T>> Update(int id, T entity);
         public Task<BaseResponce<T>> Get(int id);
-        public Task<BaseResponce<List<T>>> GetAll();
+        public Task<BaseResponce<IEnumerable<T>>> GetAll();
     }
 }

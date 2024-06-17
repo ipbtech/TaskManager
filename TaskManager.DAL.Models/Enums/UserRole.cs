@@ -1,4 +1,4 @@
-﻿namespace TaskManager.Api.Dto
+﻿namespace TaskManager.DAL.Models
 {
     public enum UserRole
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TaskManager.Dal.Config;
-using TaskManager.Domain;
+using TaskManager.DAL.Models;
 
 namespace TaskManager.Dal
 {

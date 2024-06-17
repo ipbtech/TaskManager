@@ -1,4 +1,4 @@
-﻿namespace TaskManager.Domain
+﻿namespace TaskManager.DAL.Models
 {
     public class Desk : AbstractModel
     {

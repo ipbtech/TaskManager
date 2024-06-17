@@ -1,4 +1,4 @@
-﻿namespace TaskManager.Api.Dto.Base
+﻿namespace TaskManager.API.Services.Base
 {
     public class BaseResponce<T>
     {

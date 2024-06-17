@@ -1,4 +1,4 @@
-﻿namespace TaskManager.Domain
+﻿namespace TaskManager.DTO.Enums
 {
     public enum StatusCode
     {

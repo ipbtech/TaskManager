@@ -1,4 +1,4 @@
-﻿using TaskManager.Domain;
+﻿using TaskManager.DAL.Models;
 
 namespace TaskManager.Dal.Repository
 {

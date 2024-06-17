@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TaskManager.Dto\TaskManager.Domain.csproj" />
+    <ProjectReference Include="..\TaskManager.DAL.Models\TaskManager.DAL.Models.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Api.Services;
+using TaskManager.API.Services.Helpers;
 using TaskManager.Dal;
 using TaskManager.Dal.Repository;
-using TaskManager.Domain;
+using TaskManager.DAL.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connection, b => b.MigrationsAssembly("TaskManager.Api"));
 });
 
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddScoped<IRepository<User>, UserRepository>();
 builder.Services.AddScoped<UserService>();
 
