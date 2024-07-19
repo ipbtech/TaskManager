@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace TaskManager.Api.Services.Helpers
+namespace TaskManager.API.Extensions
 {
     public static class StringExtension
     {

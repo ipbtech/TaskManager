@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TaskManager.Api.Services;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using TaskManager.API.Helpers;
+using TaskManager.API.Services;
 using TaskManager.DTO.User;
 
 namespace TaskManager.Api.Controllers
@@ -18,58 +20,102 @@ namespace TaskManager.Api.Controllers
 
 
         [HttpGet("get/{id}")]
+        [Authorize]
+        [ProducesResponseType(typeof(UserGetDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Get(int id)
         {
             var responce = await _userService.Get(id);
             if (responce.IsOkay)
                 return Ok(responce.Data);
             else
-                return NotFound("User not found");
+                return StatusCode(responce.StatusCode, new ErrorResponce
+                {
+                    Status = responce.StatusCode,
+                    ErrorText = responce.Description
+                });
         }
 
 
-        [HttpGet("get")]
+        [HttpGet("get/all")]
+        [Authorize(Roles = "SystemOwner,Admin")]
+        [ProducesResponseType(typeof(IEnumerable<UserGetDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Get()
         {
             var responce = await _userService.GetAll();
             if (responce.IsOkay)
                 return Ok(responce.Data);
             else
-                return BadRequest();
+                return StatusCode(responce.StatusCode, new ErrorResponce
+                {
+                    Status = responce.StatusCode,
+                    ErrorText = responce.Description
+                });
         }
 
 
         [HttpPost("create")]
+        [Authorize(Roles = "SystemOwner")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] UserCreateDto user)
         {
             if (ModelState.IsValid)
             {
-                bool isCreated = await _userService.Create(user);
-                if (isCreated)
+                var responce = await _userService.Create(user);
+                if (responce.IsOkay) 
                     return Ok();
                 else
-                    return BadRequest("User with this email already exist");
+                    return StatusCode(responce.StatusCode, new ErrorResponce 
+                    { 
+                        Status = responce.StatusCode,
+                        ErrorText = responce.Description 
+                    });
             }
-            return BadRequest("Model is invalid");
+            return BadRequest(new ErrorResponce { Status = 400, ErrorText = "Passed model is invalid" });
         }
 
 
         [HttpPost("create/multiple")]
+        [Authorize(Roles = "SystemOwner")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateMultiple([FromBody] List<UserCreateDto> userDtos)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && userDtos.Any())
             {
-                bool isCreated = await _userService.CreateMutiple(userDtos);
-                if (isCreated)
+                var responce = await _userService.CreateMultiple(userDtos);
+                if (responce.IsOkay)
                     return Ok();
                 else
-                    return BadRequest("User with this email already exist");
+                    return StatusCode(responce.StatusCode, new ErrorResponce
+                    {
+                        Status = responce.StatusCode,
+                        ErrorText = responce.Description
+                    });
             }
-            return BadRequest("Model is invalid");
+            return BadRequest(new ErrorResponce { Status = 400, ErrorText = "Passed model is invalid" });
         }
 
 
         [HttpPatch("update/{id}")]
+        [Authorize(Roles = "SystemOwner")]
+        [ProducesResponseType(typeof(UserGetDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Update(int id, [FromBody] UserUpdateDto user)
         {
             if (ModelState.IsValid)
@@ -78,21 +124,34 @@ namespace TaskManager.Api.Controllers
                 if (responce.IsOkay)
                     return Ok(responce.Data);
                 else
-                    return NotFound("User not found");
-               
+                    return StatusCode(responce.StatusCode, new ErrorResponce
+                    {
+                        Status = responce.StatusCode,
+                        ErrorText = responce.Description
+                    });
             }
-            return BadRequest("Model is invalid");
+            return BadRequest(new ErrorResponce { Status = 400, ErrorText = "Passed model is invalid" });
         }
 
 
         [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "SystemOwner")]
+        [ProducesResponseType(typeof(UserGetDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int id)
         {
-            bool isDel = await _userService.Delete(id);
-            if (isDel)
+            var responce = await _userService.Delete(id);
+            if (responce.IsOkay)
                 return Ok();
             else
-                return NotFound("User not found");
+                return StatusCode(responce.StatusCode, new ErrorResponce
+                {
+                    Status = responce.StatusCode,
+                    ErrorText = responce.Description
+                });
         }
     }
 }

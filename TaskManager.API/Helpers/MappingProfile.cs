@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using TaskManager.Api.Services.Helpers;
+using TaskManager.API.Extensions;
 using TaskManager.DAL.Models;
 using TaskManager.DTO.User;
 
-namespace TaskManager.API.Services.Helpers
+namespace TaskManager.API.Helpers
 {
     public class MappingProfile : Profile
     {
-        public MappingProfile() 
+        public MappingProfile()
         {
             CreateMap<User, UserCreateDto>().ReverseMap()
                 .ForMember(u => u.HashPassword, opt => opt.MapFrom(u => u.Password.HashSha256()));
