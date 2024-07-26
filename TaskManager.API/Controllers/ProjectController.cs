@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.API.Helpers;
+using TaskManager.API.Services;
+using TaskManager.DTO.Project;
 
 namespace TaskManager.API.Controllers
 {
@@ -7,6 +10,103 @@ namespace TaskManager.API.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
+        private readonly ProjectService _projectService;
 
+        public ProjectController(ProjectService projectService)
+        {
+            _projectService = projectService;
+        }
+
+
+        [HttpPost("create")]
+        [Authorize(Roles = "SystemOwner")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Create([FromBody] ProjectCreateDto createDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var responce =  await _projectService.Create(createDto);
+                if (responce.IsOkay)
+                    return Ok();
+                else
+                    return StatusCode(responce.StatusCode, new ErrorResponce
+                    {
+                        Status = responce.StatusCode,
+                        ErrorText = responce.Description
+                    });
+            }
+            return BadRequest(new ErrorResponce { Status = 400, ErrorText = "Passed model is invalid" });
+        }
+
+
+        [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "SystemOwner")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var responce = await _projectService.Delete(id);
+            if (responce.IsOkay)
+                return Ok();
+            else
+                return StatusCode(responce.StatusCode, new ErrorResponce
+                {
+                    Status = responce.StatusCode,
+                    ErrorText = responce.Description
+                });
+        }
+
+
+        [HttpPatch("update/{id}")]
+        [Authorize(Roles = "SystemOwner,Admin")]
+        [ProducesResponseType(typeof(ProjectGetDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Update(int id, [FromBody] ProjectUpdateDto project)
+        {
+            if (ModelState.IsValid)
+            {
+                var responce = await _projectService.Update(id, project);
+                if (responce.IsOkay)
+                    return Ok(responce.Data);
+                else
+                    return StatusCode(responce.StatusCode, new ErrorResponce
+                    {
+                        Status = responce.StatusCode,
+                        ErrorText = responce.Description
+                    });
+            }
+            return BadRequest(new ErrorResponce { Status = 400, ErrorText = "Passed model is invalid" });
+        }
+
+
+
+        [HttpGet("get/{id}")]
+        [Authorize]
+        [ProducesResponseType(typeof(ProjectGetDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Get(int id)
+        {
+            var responce = await _projectService.Get(id);
+            if (responce.IsOkay)
+                return Ok(responce.Data);
+            else
+                return StatusCode(responce.StatusCode, new ErrorResponce
+                {
+                    Status = responce.StatusCode,
+                    ErrorText = responce.Description
+                });
+        }
     }
 }

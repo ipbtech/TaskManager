@@ -58,6 +58,25 @@ namespace TaskManager.Api.Controllers
                 });
         }
 
+        [HttpGet("get/admins")]
+        [Authorize(Roles = "SystemOwner")]
+        [ProducesResponseType(typeof(IEnumerable<UserGetDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetAdminUsers()
+        {
+            var responce = await _userService.GetAllAdmins();
+            if (responce.IsOkay)
+                return Ok(responce.Data);
+            else
+                return StatusCode(responce.StatusCode, new ErrorResponce
+                {
+                    Status = responce.StatusCode,
+                    ErrorText = responce.Description
+                });
+        }
+
 
         [HttpPost("create")]
         [Authorize(Roles = "SystemOwner")]
@@ -136,7 +155,6 @@ namespace TaskManager.Api.Controllers
 
         [HttpDelete("delete/{id}")]
         [Authorize(Roles = "SystemOwner")]
-        [ProducesResponseType(typeof(UserGetDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status404NotFound)]

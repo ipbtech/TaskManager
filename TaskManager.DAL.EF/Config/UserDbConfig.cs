@@ -28,7 +28,7 @@ namespace TaskManager.Dal.Config
                 Password = "qwerty",
                 HashPassword = "qwerty",
                 Role = UserRole.SystemOwner
-            }); ;
+            });
         }
     }
 }

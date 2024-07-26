@@ -233,5 +233,28 @@ namespace TaskManager.API.Services
                 };
             }
         }
+
+        public async Task<BaseResponce<IEnumerable<UserBaseDto>>> GetAllAdmins()
+        {
+            try
+            {
+                var users = await _userRepo.GetAll().Where(user => user.Role == UserRole.Admin).ToListAsync();
+                return new BaseResponce<IEnumerable<UserBaseDto>>
+                {
+                    IsOkay = true,
+                    Data = _mapper.Map<IEnumerable<UserGetDto>>(users)
+                };
+            }
+            catch (Exception ex)
+            {
+                //TODO logging
+                return new BaseResponce<IEnumerable<UserBaseDto>>
+                {
+                    IsOkay = true,
+                    StatusCode = 500,
+                    Description = "Internal server error"
+                };
+            }
+        }
     }
 }

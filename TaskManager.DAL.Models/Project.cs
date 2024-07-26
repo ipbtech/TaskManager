@@ -10,6 +10,9 @@
         public List<UserProjectLink> ProjectUsers { get; set; } = new List<UserProjectLink>();
         public List<Desk> Desks { get; set; } = new List<Desk>();
 
-        public Project() : base() { }
+        public Project() : base() 
+        {
+            Status = StatusCode.New;
+        }
     }
 }
