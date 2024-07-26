@@ -9,7 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.DAL.Models", "T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.DAL.EF", "TaskManager.DAL.EF\TaskManager.DAL.EF.csproj", "{3E4152D6-90A4-49BA-96AF-7FA5D66F46FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.DTO", "TaskManager.DTO\TaskManager.DTO.csproj", "{F371EADE-5B23-40AC-BEB0-53DAAC7DCAA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.DTO", "TaskManager.DTO\TaskManager.DTO.csproj", "{F371EADE-5B23-40AC-BEB0-53DAAC7DCAA2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{9969CF57-1EF3-44A7-AF6F-F07448002B20}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{1F2CCDF0-0679-41B0-8779-55DE1BE97ACC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{C2F318BC-A247-4F1A-AF9F-3050BD891159}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +42,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{48150FC0-C65E-4C0D-B674-2F5F37724E85} = {1F2CCDF0-0679-41B0-8779-55DE1BE97ACC}
+		{3EDD9DEC-CE3B-4B37-8DB0-ED92B9B98DC1} = {9969CF57-1EF3-44A7-AF6F-F07448002B20}
+		{3E4152D6-90A4-49BA-96AF-7FA5D66F46FE} = {9969CF57-1EF3-44A7-AF6F-F07448002B20}
+		{F371EADE-5B23-40AC-BEB0-53DAAC7DCAA2} = {C2F318BC-A247-4F1A-AF9F-3050BD891159}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6082A4CD-29EB-4B3A-A1E3-D093B777CF63}

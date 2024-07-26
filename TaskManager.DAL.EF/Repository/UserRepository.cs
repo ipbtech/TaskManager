@@ -18,7 +18,7 @@ namespace TaskManager.Dal.Repository
 
         public async Task Create(User entity)
         {
-            var z = await _db.Users.AddAsync(entity);
+            await _db.Users.AddAsync(entity);
             await _db.SaveChangesAsync();
         }
 
