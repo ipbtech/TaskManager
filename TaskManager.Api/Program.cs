@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 string connection = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(connection, b => b.MigrationsAssembly("TaskManager.Api"));
+    options.UseSqlServer(connection, b => b.MigrationsAssembly("TaskManager.API"));
 });
 
 builder.Services.AddJwtAuthentication();

@@ -29,9 +29,6 @@ namespace TaskManager.Dal
 
             modelBuilder.Entity<WorkTask>().ToTable("tasks");
             modelBuilder.ApplyConfiguration(new TaskDbConfig());
-
-            modelBuilder.Entity<UserProjectLink>().ToTable("users_projects");
-            modelBuilder.ApplyConfiguration(new UserProjectLinkDbConfig());
         }
     }
 }

@@ -14,7 +14,7 @@
         public DateTime LastLoginDate { get; set; }
 
         public List<Project> AdminProjects { get; set; } = new List<Project>();
-        public List<UserProjectLink> UserProjects { get; set; } = new List<UserProjectLink>();
+        public List<Project> UserProjects { get; set; } = new List<Project>();
         public List<Desk> Desks { get; set; } = new List<Desk>();
         public List<WorkTask> AssigningTasks { get; set; } = new List<WorkTask>();
         public List<WorkTask> CreatingTasks { get; set; } = new List<WorkTask>();

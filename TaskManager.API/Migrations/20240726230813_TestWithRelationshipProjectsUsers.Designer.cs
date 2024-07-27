@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManager.Dal;
 
@@ -11,9 +12,11 @@ using TaskManager.Dal;
 namespace TaskManager.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240726230813_TestWithRelationshipProjectsUsers")]
+    partial class TestWithRelationshipProjectsUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,7 +96,7 @@ namespace TaskManager.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AdminId")
+                    b.Property<int>("AdminId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
@@ -203,7 +206,7 @@ namespace TaskManager.Api.Migrations
                             LastLoginDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastName = "admin",
                             Password = "qwerty",
-                            RegistrDate = new DateTime(2024, 7, 27, 3, 14, 6, 929, DateTimeKind.Local).AddTicks(6210),
+                            RegistrDate = new DateTime(2024, 7, 27, 2, 8, 10, 102, DateTimeKind.Local).AddTicks(4547),
                             Role = 3
                         });
                 });
@@ -274,13 +277,13 @@ namespace TaskManager.Api.Migrations
                     b.HasOne("TaskManager.DAL.Models.User", null)
                         .WithMany()
                         .HasForeignKey("ProjectUsersId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TaskManager.DAL.Models.Project", null)
                         .WithMany()
                         .HasForeignKey("UserProjectsId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -308,7 +311,8 @@ namespace TaskManager.Api.Migrations
                     b.HasOne("TaskManager.DAL.Models.User", "Admin")
                         .WithMany("AdminProjects")
                         .HasForeignKey("AdminId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Admin");
                 });

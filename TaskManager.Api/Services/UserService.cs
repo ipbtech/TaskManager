@@ -183,7 +183,8 @@ namespace TaskManager.API.Services
         {
             try
             {
-                var user = await _userRepo.GetAll().FirstOrDefaultAsync(user => user.Email == email);
+                var user = await _userRepo.GetAll()
+                    .Include(u => u.UserProjects).Include(u => u.AdminProjects).FirstOrDefaultAsync(user => user.Email == email);
                 if (user is not null)
                 {
                     return new BaseResponce<UserBaseDto>

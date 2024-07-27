@@ -28,10 +28,11 @@ namespace TaskManager.API.Services
                 if (!_projectRepo.GetAll().Any(proj => proj.Name == entity.Name))
                 {
                     var admin = await _userRepo.GetAll().Where(u => u.Role == UserRole.Admin || u.Role == UserRole.SystemOwner)
-                        .AsNoTracking().FirstOrDefaultAsync(u => u.Id == ((ProjectCreateDto)entity).AdminId);
+                        .FirstOrDefaultAsync(u => u.Id == ((ProjectCreateDto)entity).AdminId);
                     if (admin is not null)
                     {
                         var proj = _mapper.Map<Project>(entity);
+                        proj.ProjectUsers.Add(admin);
                         await _projectRepo.Create(proj);
                         return new BaseResponce<bool>
                         {
@@ -158,7 +159,7 @@ namespace TaskManager.API.Services
             try
             {
                 var project = await _projectRepo.GetAll()
-                    .Include(p => p.Admin).Include(p => p.Desks).FirstOrDefaultAsync(p => p.Id == id);
+                    .Include(p => p.Admin).Include(p => p.Desks).Include(p => p.ProjectUsers).FirstOrDefaultAsync(p => p.Id == id);
                 if (project is not null)
                 {
                     return new BaseResponce<ProjectBaseDto>

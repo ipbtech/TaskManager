@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 using TaskManager.DAL.Models;
 
 namespace TaskManager.Dal.Config
@@ -21,7 +22,9 @@ namespace TaskManager.Dal.Config
 
             builder.HasOne(proj => proj.Admin).WithMany(user => user.AdminProjects)
                 .HasPrincipalKey(user => user.Id).HasForeignKey(proj => proj.AdminId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
+
+            var z = builder.HasMany(proj => proj.ProjectUsers).WithMany(user => user.UserProjects);
         }
     }
 }

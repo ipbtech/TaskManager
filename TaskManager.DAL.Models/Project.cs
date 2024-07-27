@@ -2,12 +2,12 @@
 {
     public class Project : AbstractModel
     {
-        public int AdminId { get; set; }
+        public int? AdminId { get; set; }
         public User? Admin { get; set; }
 
         public StatusCode Status { get; set; }
         
-        public List<UserProjectLink> ProjectUsers { get; set; } = new List<UserProjectLink>();
+        public List<User> ProjectUsers { get; set; } = new List<User>();
         public List<Desk> Desks { get; set; } = new List<Desk>();
 
         public Project() : base() 
