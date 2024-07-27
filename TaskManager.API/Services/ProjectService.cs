@@ -207,7 +207,7 @@ namespace TaskManager.API.Services
                 //TODO logging
                 return new BaseResponce<IEnumerable<ProjectBaseDto>>
                 {
-                    IsOkay = true,
+                    IsOkay = false,
                     StatusCode = 500,
                     Description = "Internal server error"
                 };
@@ -232,7 +232,87 @@ namespace TaskManager.API.Services
                 //TODO logging
                 return new BaseResponce<IEnumerable<ProjectBaseDto>>
                 {
-                    IsOkay = true,
+                    IsOkay = false,
+                    StatusCode = 500,
+                    Description = "Internal server error"
+                };
+            }
+        }
+
+        public async Task<BaseResponce<bool>> AddUsersToProject(int projectId, List<int> userIds)
+        {
+            try
+            {
+                var project = await _projectRepo.GetAll()
+                    .Include(p => p.ProjectUsers).FirstOrDefaultAsync(p => p.Id == projectId);
+                if (project is not null)
+                {
+                    foreach (var id in userIds)
+                    {
+                        var user = await _userRepo.GetAll().FirstOrDefaultAsync(u => u.Id == id);
+                        if (user is not null && !project.ProjectUsers.Any(u => u.Id == id))
+                            project.ProjectUsers.Add(user);
+                    }
+                    await _projectRepo.Update(project);
+                    return new BaseResponce<bool>
+                    {
+                        IsOkay = true,
+                        Data = true
+                    };
+                }
+                return new BaseResponce<bool>
+                {
+                    IsOkay = false,
+                    StatusCode = 404,
+                    Description = "Project not found"
+                };
+            }
+            catch (Exception ex)
+            {
+                //TODO logging
+                return new BaseResponce<bool>
+                {
+                    IsOkay = false,
+                    StatusCode = 500,
+                    Description = "Internal server error"
+                };
+            }
+        }
+
+        public async Task<BaseResponce<bool>> RemoveUsersFromProject(int projectId, List<int> userIds)
+        {
+            try
+            {
+                var project = await _projectRepo.GetAll()
+                    .Include(p => p.ProjectUsers).FirstOrDefaultAsync(p => p.Id == projectId);
+                if (project is not null)
+                {
+                    foreach (var id in userIds)
+                    {
+                        var user = await _userRepo.GetAll().FirstOrDefaultAsync(u => u.Id == id);
+                        if (user is not null && project.ProjectUsers.Any(u => u.Id == id))
+                            project.ProjectUsers.Remove(user);
+                    }
+                    await _projectRepo.Update(project);
+                    return new BaseResponce<bool>
+                    {
+                        IsOkay = true,
+                        Data = true
+                    };
+                }
+                return new BaseResponce<bool>
+                {
+                    IsOkay = false,
+                    StatusCode = 404,
+                    Description = "Project not found"
+                };
+            }
+            catch (Exception ex)
+            {
+                //TODO logging
+                return new BaseResponce<bool>
+                {
+                    IsOkay = false,
                     StatusCode = 500,
                     Description = "Internal server error"
                 };

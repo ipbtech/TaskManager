@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.API.Helpers;
 using TaskManager.API.Services;
@@ -149,6 +150,55 @@ namespace TaskManager.API.Controllers
                     Status = userResponce.StatusCode,
                     ErrorText = userResponce.Description
                 });
+        }
+
+
+        [HttpPatch("{projectId}/add-users")]
+        [Authorize(Roles = "SystemOwner,Admin")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddUsersToProject(int projectId, [FromBody] List<int> userIds)
+        {
+            if (ModelState.IsValid)
+            {
+                var responce = await _projectService.AddUsersToProject(projectId, userIds);
+                if (responce.IsOkay)
+                    return Ok();
+                else
+                    return StatusCode(responce.StatusCode, new ErrorResponce
+                    {
+                        Status = responce.StatusCode,
+                        ErrorText = responce.Description
+                    });
+            }
+            return BadRequest(new ErrorResponce { Status = 400, ErrorText = "Passed model is invalid" });
+        }
+
+        [HttpPatch("{projectId}/remove-users")]
+        [Authorize(Roles = "SystemOwner,Admin")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RemoveUsersFromProject(int projectId, [FromBody] List<int> userIds)
+        {
+            if (ModelState.IsValid)
+            {
+                var responce = await _projectService.RemoveUsersFromProject(projectId, userIds);
+                if (responce.IsOkay)
+                    return Ok();
+                else
+                    return StatusCode(responce.StatusCode, new ErrorResponce
+                    {
+                        Status = responce.StatusCode,
+                        ErrorText = responce.Description
+                    });
+            }
+            return BadRequest(new ErrorResponce { Status = 400, ErrorText = "Passed model is invalid" });
         }
     }
 }

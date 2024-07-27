@@ -10,11 +10,13 @@ namespace TaskManager.API.Services
     public class UserService : IService<UserBaseDto>
     {
         private readonly IRepository<User> _userRepo;
+        private readonly IRepository<Project> _projectRepo;
         private readonly IMapper _mapper;
 
-        public UserService(IRepository<User> userRepo, IMapper mapper)
+        public UserService(IRepository<User> userRepo, IRepository<Project> projectRepo, IMapper mapper)
         {
             _userRepo = userRepo;
+            _projectRepo = projectRepo;
             _mapper = mapper;
         }
 
@@ -239,6 +241,40 @@ namespace TaskManager.API.Services
                 {
                     IsOkay = true,
                     Data = _mapper.Map<IEnumerable<UserGetDto>>(users)
+                };
+            }
+            catch (Exception ex)
+            {
+                //TODO logging
+                return new BaseResponce<IEnumerable<UserBaseDto>>
+                {
+                    IsOkay = true,
+                    StatusCode = 500,
+                    Description = "Internal server error"
+                };
+            }
+        }
+
+        public async Task<BaseResponce<IEnumerable<UserBaseDto>>> GetUsersByProject(int projectId)
+        {
+            try
+            {
+                var project = await _projectRepo.GetAll().AsNoTracking()
+                    .Include(p => p.ProjectUsers).FirstOrDefaultAsync(p => p.Id == projectId);
+                if (project is not null)
+                {
+                    var users = project.ProjectUsers;
+                    return new BaseResponce<IEnumerable<UserBaseDto>>
+                    {
+                        IsOkay = true,
+                        Data = _mapper.Map<IEnumerable<UserGetDto>>(users)
+                    };
+                }
+                return new BaseResponce<IEnumerable<UserBaseDto>>
+                {
+                    IsOkay = false,
+                    StatusCode = 404,
+                    Description = "Project not found"
                 };
             }
             catch (Exception ex)

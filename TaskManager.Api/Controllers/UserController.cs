@@ -77,6 +77,25 @@ namespace TaskManager.Api.Controllers
                 });
         }
 
+        [HttpGet("get/by-project/{projectId}")]
+        [Authorize(Roles = "SystemOwner,Admin,Editor")]
+        [ProducesResponseType(typeof(IEnumerable<UserGetDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetUsersByProjectId(int projectId)
+        {
+            var responce = await _userService.GetUsersByProject(projectId);
+            if (responce.IsOkay)
+                return Ok(responce.Data);
+            else
+                return StatusCode(responce.StatusCode, new ErrorResponce
+                {
+                    Status = responce.StatusCode,
+                    ErrorText = responce.Description
+                });
+        }
+
 
         [HttpPost("create")]
         [Authorize(Roles = "SystemOwner")]
