@@ -24,6 +24,7 @@ namespace TaskManager.API.Helpers
             CreateMap<UserUpdateDto, User>();
             CreateMap<User, UserGetDto>();
             CreateMap<UserCreateDto, User>().ForMember(u => u.HashPassword, opt => opt.MapFrom(u => u.Password.HashSha256()));
+            CreateMap<User, AdminGetDto>();
         }
         private void MapProjects()
         {

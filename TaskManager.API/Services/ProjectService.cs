@@ -27,7 +27,8 @@ namespace TaskManager.API.Services
             {
                 if (!_projectRepo.GetAll().Any(proj => proj.Name == entity.Name))
                 {
-                    var admin = await _userRepo.GetAll().Where(u => u.Role == UserRole.Admin || u.Role == UserRole.SystemOwner)
+                    var admin = await _userRepo.GetAll()
+                        .Where(u => u.Role == UserRole.Admin || u.Role == UserRole.SystemOwner)
                         .FirstOrDefaultAsync(u => u.Id == ((ProjectCreateDto)entity).AdminId);
                     if (admin is not null)
                     {
@@ -104,13 +105,15 @@ namespace TaskManager.API.Services
             try
             {
                 var project = await _projectRepo.GetAll()
-                    .Include(p => p.Desks).FirstOrDefaultAsync(p => p.Id == id);
+                    .Include(p => p.Admin).Include(p => p.Desks)
+                    .FirstOrDefaultAsync(p => p.Id == id);
                 if (project is not null)
                 {
                     if (entity is ProjectUpdateDto updateDto)
                     {
-                        var admin = await _userRepo.GetAll().Where(u => u.Role == UserRole.Admin || u.Role == UserRole.SystemOwner)
-                            .AsNoTracking().FirstOrDefaultAsync(u => u.Id == updateDto.AdminId);
+                        var admin = await _userRepo.GetAll()
+                            .Where(u => u.Role == UserRole.Admin || u.Role == UserRole.SystemOwner)
+                            .FirstOrDefaultAsync(u => u.Id == updateDto.AdminId);
                         if (admin is not null)
                         {
                             _mapper.Map(updateDto, project);
@@ -158,8 +161,8 @@ namespace TaskManager.API.Services
         {
             try
             {
-                var project = await _projectRepo.GetAll()
-                    .Include(p => p.Admin).Include(p => p.Desks).Include(p => p.ProjectUsers).FirstOrDefaultAsync(p => p.Id == id);
+                var project = await _projectRepo.GetAll().AsNoTracking()
+                    .Include(p => p.Admin).Include(p => p.Desks).FirstOrDefaultAsync(p => p.Id == id);
                 if (project is not null)
                 {
                     return new BaseResponce<ProjectBaseDto>
@@ -187,9 +190,53 @@ namespace TaskManager.API.Services
             }
         }
 
-        public Task<BaseResponce<IEnumerable<ProjectBaseDto>>> GetAll()
+        public async Task<BaseResponce<IEnumerable<ProjectBaseDto>>> GetAll()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var projects = await _projectRepo.GetAll().AsNoTracking()
+                    .Include(p => p.Admin).Include(p => p.Desks).ToListAsync();
+                return new BaseResponce<IEnumerable<ProjectBaseDto>>
+                {
+                    IsOkay = true,
+                    Data = _mapper.Map<IEnumerable<ProjectGetDto>>(projects)
+                };
+            }
+            catch (Exception ex)
+            {
+                //TODO logging
+                return new BaseResponce<IEnumerable<ProjectBaseDto>>
+                {
+                    IsOkay = true,
+                    StatusCode = 500,
+                    Description = "Internal server error"
+                };
+            }
+        }
+
+        public async Task<BaseResponce<IEnumerable<ProjectBaseDto>>> GetByUserId(int id)
+        {
+            try
+            {
+                var projects = await _projectRepo.GetAll().AsNoTracking()
+                    .Include(p => p.Admin).Include(p => p.Desks).Include(p => p.ProjectUsers)
+                    .Where(p => p.ProjectUsers.Any(u => u.Id == id)).ToListAsync();
+                return new BaseResponce<IEnumerable<ProjectBaseDto>>
+                {
+                    IsOkay = true,
+                    Data = _mapper.Map<IEnumerable<ProjectGetDto>>(projects)
+                };
+            }
+            catch (Exception ex)
+            {
+                //TODO logging
+                return new BaseResponce<IEnumerable<ProjectBaseDto>>
+                {
+                    IsOkay = true,
+                    StatusCode = 500,
+                    Description = "Internal server error"
+                };
+            }
         }
     }
 }

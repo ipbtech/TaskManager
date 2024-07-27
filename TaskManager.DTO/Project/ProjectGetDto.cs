@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using TaskManager.DTO.Desk;
 using TaskManager.DTO.Enums;
+using TaskManager.DTO.User;
 
 namespace TaskManager.DTO.Project
 {
@@ -13,6 +14,7 @@ namespace TaskManager.DTO.Project
 
         [EnumDataType(typeof(StatusCode))]
         public StatusCode Status { get; set; }
+        public AdminGetDto? Admin {  get; set; }
 
         public List<DeskShortGetDto>? Desks { get; set; }
     }

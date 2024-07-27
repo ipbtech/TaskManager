@@ -22,7 +22,7 @@ namespace TaskManager.API.Services
         {
             try
             {
-                if (!_userRepo.GetAll().Any(user => user.Email == entity.Email))
+                if (!_userRepo.GetAll().AsNoTracking().Any(user => user.Email == entity.Email))
                 {
                     var model = _mapper.Map<User>(entity);
                     await _userRepo.Create(model);
@@ -115,12 +115,7 @@ namespace TaskManager.API.Services
                 var user = await _userRepo.GetAll().FirstOrDefaultAsync(user => user.Id == id);
                 if (user is not null)
                 {
-                    user.FirstName = entity.FirstName;
-                    user.LastName = entity.LastName;
-                    user.Email = entity.Email;
-                    user.Phone = entity.Phone;
-                    user.Role = (UserRole)entity.Role;
-
+                    _mapper.Map(entity, user);
                     User newUser = await _userRepo.Update(user);
                     return new BaseResponce<UserBaseDto>
                     {
@@ -151,7 +146,7 @@ namespace TaskManager.API.Services
         {
             try
             {
-                var user = await _userRepo.GetAll().FirstOrDefaultAsync(user => user.Id == id);
+                var user = await _userRepo.GetAll().AsNoTracking().FirstOrDefaultAsync(user => user.Id == id);
                 if (user is not null)
                 {
                     return new BaseResponce<UserBaseDto>
@@ -183,8 +178,7 @@ namespace TaskManager.API.Services
         {
             try
             {
-                var user = await _userRepo.GetAll()
-                    .Include(u => u.UserProjects).Include(u => u.AdminProjects).FirstOrDefaultAsync(user => user.Email == email);
+                var user = await _userRepo.GetAll().AsNoTracking().FirstOrDefaultAsync(user => user.Email == email);
                 if (user is not null)
                 {
                     return new BaseResponce<UserBaseDto>
@@ -216,7 +210,7 @@ namespace TaskManager.API.Services
         {
             try
             {
-                var users = await _userRepo.GetAll().ToListAsync();
+                var users = await _userRepo.GetAll().AsNoTracking().ToListAsync();
                 return new BaseResponce<IEnumerable<UserBaseDto>>
                 {
                     IsOkay = true,
@@ -239,7 +233,8 @@ namespace TaskManager.API.Services
         {
             try
             {
-                var users = await _userRepo.GetAll().Where(user => user.Role == UserRole.Admin).ToListAsync();
+                var users = await _userRepo.GetAll().AsNoTracking()
+                    .Where(user => user.Role == UserRole.Admin).ToListAsync();
                 return new BaseResponce<IEnumerable<UserBaseDto>>
                 {
                     IsOkay = true,
