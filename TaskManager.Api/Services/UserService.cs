@@ -1,13 +1,18 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using TaskManager.API.Extensions;
 using TaskManager.API.Helpers;
 using TaskManager.Dal.Repository;
 using TaskManager.DAL.Models;
+using TaskManager.DTO.Account;
 using TaskManager.DTO.User;
 
 namespace TaskManager.API.Services
 {
-    public class UserService : IService<UserBaseDto>
+    public class UserService : IUserService
     {
         private readonly IRepository<User> _userRepo;
         private readonly IRepository<Project> _projectRepo;
@@ -20,14 +25,14 @@ namespace TaskManager.API.Services
             _mapper = mapper;
         }
 
-        public async Task<BaseResponce<bool>> Create(UserBaseDto entity)
+        public async Task<BaseResponce<bool>> Create(UserCreateDto entity)
         {
             try
             {
                 if (!_userRepo.GetAll().AsNoTracking().Any(user => user.Email == entity.Email))
                 {
-                    var model = _mapper.Map<User>(entity);
-                    await _userRepo.Create(model);
+                    var user = _mapper.Map<User>(entity);
+                    await _userRepo.Create(user);
                     return new BaseResponce<bool>
                     {
                         IsOkay = true,
@@ -53,7 +58,7 @@ namespace TaskManager.API.Services
             }
         }
 
-        public async Task<BaseResponce<bool>> CreateMultiple(IEnumerable<UserBaseDto> userDtos)
+        public async Task<BaseResponce<bool>> CreateMultiple(IEnumerable<UserCreateDto> userDtos)
         {
             if (userDtos.Any())
             {
@@ -110,7 +115,7 @@ namespace TaskManager.API.Services
             }
         }
 
-        public async Task<BaseResponce<UserBaseDto>> Update(int id, UserBaseDto entity)
+        public async Task<BaseResponce<UserBaseDto>> Update(int id, UserUpdateDto entity)
         {
             try
             {
@@ -231,12 +236,12 @@ namespace TaskManager.API.Services
             }
         }
 
-        public async Task<BaseResponce<IEnumerable<UserBaseDto>>> GetAllAdmins()
+        public async Task<BaseResponce<IEnumerable<UserBaseDto>>> GetAllByRole(DTO.Enums.UserRole role)
         {
             try
             {
                 var users = await _userRepo.GetAll().AsNoTracking()
-                    .Where(user => user.Role == UserRole.Admin).ToListAsync();
+                    .Where(user => user.Role == (UserRole)role).ToListAsync();
                 return new BaseResponce<IEnumerable<UserBaseDto>>
                 {
                     IsOkay = true,
@@ -255,7 +260,7 @@ namespace TaskManager.API.Services
             }
         }
 
-        public async Task<BaseResponce<IEnumerable<UserBaseDto>>> GetUsersByProject(int projectId)
+        public async Task<BaseResponce<IEnumerable<UserBaseDto>>> GetByProject(int projectId)
         {
             try
             {
@@ -287,6 +292,70 @@ namespace TaskManager.API.Services
                     Description = "Internal server error"
                 };
             }
+        }
+
+        public async Task<BaseResponce<SignInResultDto>> Login(LoginDto loginDto)
+        {
+            try
+            {
+                var user = await _userRepo.GetAll()
+                    .FirstOrDefaultAsync(user => user.Email == loginDto.Email && user.HashPassword == loginDto.Password.HashSha256());
+                if (user is null)
+                {
+                    return new BaseResponce<SignInResultDto>()
+                    {
+                        IsOkay = false,
+                        StatusCode = 400,
+                        Description = "Uncorrect email or password"
+                    };
+                }
+
+                user.LastLoginDate = DateTime.Now;
+                await _userRepo.Update(user);
+
+                var token = CreateJwtToken(user);
+                return new BaseResponce<SignInResultDto>()
+                {
+                    IsOkay = true,
+                    Data = new SignInResultDto()
+                    {
+                        User = _mapper.Map<UserGetDto>(user),
+                        AccessToken = token
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                //TODO logging
+                return new BaseResponce<SignInResultDto>
+                {
+                    IsOkay = false,
+                    StatusCode = 500,
+                    Description = "Internal server error"
+                };
+            }
+        }
+
+
+        private static string CreateJwtToken(User user)
+        {
+            var now = DateTime.UtcNow;
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role.ToString())
+            };
+
+            var jwt = new JwtSecurityToken(
+                    issuer: AuthOptions.ISSUER,
+                    audience: AuthOptions.AUDIENCE,
+                    notBefore: now,
+                    claims: claims,
+                    expires: now.Add(TimeSpan.FromDays(AuthOptions.LIFETIME)),
+                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            return encodedJwt;
         }
     }
 }

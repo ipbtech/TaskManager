@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.API.Helpers;
 using TaskManager.API.Services;
+using TaskManager.DTO.Enums;
 using TaskManager.DTO.User;
 
 namespace TaskManager.Api.Controllers
@@ -10,9 +11,9 @@ namespace TaskManager.Api.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
 
-        public UserController(UserService userService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
         }
@@ -40,7 +41,7 @@ namespace TaskManager.Api.Controllers
 
 
         [HttpGet("get/all")]
-        [Authorize(Roles = "SystemOwner,Admin")]
+        [Authorize]
         [ProducesResponseType(typeof(IEnumerable<UserGetDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
@@ -59,14 +60,14 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("get/admins")]
-        [Authorize(Roles = "SystemOwner")]
+        [Authorize]
         [ProducesResponseType(typeof(IEnumerable<UserGetDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetAdminUsers()
         {
-            var responce = await _userService.GetAllAdmins();
+            var responce = await _userService.GetAllByRole(UserRole.Admin);
             if (responce.IsOkay)
                 return Ok(responce.Data);
             else
@@ -85,7 +86,7 @@ namespace TaskManager.Api.Controllers
         [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetUsersByProjectId(int projectId)
         {
-            var responce = await _userService.GetUsersByProject(projectId);
+            var responce = await _userService.GetByProject(projectId);
             if (responce.IsOkay)
                 return Ok(responce.Data);
             else

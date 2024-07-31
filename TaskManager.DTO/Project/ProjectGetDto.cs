@@ -16,6 +16,12 @@ namespace TaskManager.DTO.Project
         public StatusCode Status { get; set; }
         public AdminGetDto? Admin {  get; set; }
 
-        public List<DeskShortGetDto>? Desks { get; set; }
+        public List<DeskGetShortDto>? Desks { get; set; }
+    }
+
+    public class ProjectGetShortDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.API.Helpers;
 using TaskManager.API.Services;
-using TaskManager.DTO.Enums;
 using TaskManager.DTO.Project;
-using TaskManager.DTO.User;
 
 namespace TaskManager.API.Controllers
 {
@@ -13,13 +10,11 @@ namespace TaskManager.API.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
-        private readonly ProjectService _projectService;
-        private readonly UserService _userService;
+        private readonly IProjectService _projectService;
 
-        public ProjectController(ProjectService projectService, UserService userService)
+        public ProjectController(IProjectService projectService)
         {
             _projectService = projectService;
-            _userService = userService;
         }
 
 
@@ -122,33 +117,18 @@ namespace TaskManager.API.Controllers
         [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAll()
         {
-            string username = HttpContext.User.Identity?.Name;
+            string? username = HttpContext.User.Identity?.Name;
             if (string.IsNullOrEmpty(username))
                 return Unauthorized();
 
-            BaseResponce<IEnumerable<ProjectBaseDto>> responce;
-            var userResponce = await _userService.Get(username);
-            if (userResponce.IsOkay && userResponce.Data is UserGetDto user)
-            {
-                if (user.Role == UserRole.SystemOwner)
-                    responce = await _projectService.GetAll();
-                else
-                    responce = await _projectService.GetByUserId(user.Id);
-
-                if (responce.IsOkay)
-                    return Ok(responce.Data);
-                else
-                    return StatusCode(responce.StatusCode, new ErrorResponce
-                    {
-                        Status = responce.StatusCode,
-                        ErrorText = responce.Description
-                    });
-            }
+            var responce = await _projectService.GetAll(username);
+            if (responce.IsOkay)
+                return Ok(responce.Data);
             else
-                return StatusCode(userResponce.StatusCode, new ErrorResponce
+                return StatusCode(responce.StatusCode, new ErrorResponce
                 {
-                    Status = userResponce.StatusCode,
-                    ErrorText = userResponce.Description
+                    Status = responce.StatusCode,
+                    ErrorText = responce.Description
                 });
         }
 

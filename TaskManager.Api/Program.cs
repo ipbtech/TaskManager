@@ -25,11 +25,10 @@ builder.Services.AddScoped<IRepository<Desk>, DeskRepository>();
 builder.Services.AddScoped<IRepository<WorkTask>, TaskRepository>();
 
 
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<AccountService>();
-builder.Services.AddScoped<ProjectService>();
-builder.Services.AddScoped<DeskService>();
-builder.Services.AddScoped<TaskService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IDeskService, DeskService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
 
 builder.Services.AddControllers();
 

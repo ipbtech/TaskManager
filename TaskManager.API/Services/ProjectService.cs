@@ -4,11 +4,10 @@ using TaskManager.API.Helpers;
 using TaskManager.Dal.Repository;
 using TaskManager.DAL.Models;
 using TaskManager.DTO.Project;
-using TaskManager.DTO.User;
 
 namespace TaskManager.API.Services
 {
-    public class ProjectService : IService<ProjectBaseDto>
+    public class ProjectService : IProjectService
     {
         private readonly IRepository<Project> _projectRepo;
         private readonly IRepository<User> _userRepo;
@@ -21,18 +20,18 @@ namespace TaskManager.API.Services
             _mapper = mapper;
         }
 
-        public async Task<BaseResponce<bool>> Create(ProjectBaseDto entity)
+        public async Task<BaseResponce<bool>> Create(ProjectCreateDto createDto)
         {
             try
             {
-                if (!_projectRepo.GetAll().Any(proj => proj.Name == entity.Name))
+                if (!_projectRepo.GetAll().AsNoTracking().Any(proj => proj.Name == createDto.Name))
                 {
                     var admin = await _userRepo.GetAll()
                         .Where(u => u.Role == UserRole.Admin || u.Role == UserRole.SystemOwner)
-                        .FirstOrDefaultAsync(u => u.Id == ((ProjectCreateDto)entity).AdminId);
+                        .FirstOrDefaultAsync(u => u.Id == createDto.AdminId);
                     if (admin is not null)
                     {
-                        var proj = _mapper.Map<Project>(entity);
+                        var proj = _mapper.Map<Project>(createDto);
                         proj.ProjectUsers.Add(admin);
                         await _projectRepo.Create(proj);
                         return new BaseResponce<bool>
@@ -100,7 +99,7 @@ namespace TaskManager.API.Services
             }
         }
 
-        public async Task<BaseResponce<ProjectBaseDto>> Update(int id, ProjectBaseDto entity)
+        public async Task<BaseResponce<ProjectBaseDto>> Update(int id, ProjectUpdateDto updateDto)
         {
             try
             {
@@ -109,40 +108,31 @@ namespace TaskManager.API.Services
                     .FirstOrDefaultAsync(p => p.Id == id);
                 if (project is not null)
                 {
-                    if (entity is ProjectUpdateDto updateDto)
+                    var admin = await _userRepo.GetAll()
+                        .Where(u => u.Role == UserRole.Admin || u.Role == UserRole.SystemOwner)
+                        .FirstOrDefaultAsync(u => u.Id == updateDto.AdminId);
+                    if (admin is not null)
                     {
-                        var admin = await _userRepo.GetAll()
-                            .Where(u => u.Role == UserRole.Admin || u.Role == UserRole.SystemOwner)
-                            .FirstOrDefaultAsync(u => u.Id == updateDto.AdminId);
-                        if (admin is not null)
-                        {
-                            _mapper.Map(updateDto, project);
-                            Project newProj = await _projectRepo.Update(project);
-                            return new BaseResponce<ProjectBaseDto>
-                            {
-                                IsOkay = true,
-                                Data = _mapper.Map<ProjectGetDto>(newProj)
-                            };
-                        }
+                        _mapper.Map(updateDto, project);
+                        Project newProj = await _projectRepo.Update(project);
                         return new BaseResponce<ProjectBaseDto>
                         {
-                            IsOkay = false,
-                            StatusCode = 400,
-                            Description = "User with passed id is not admin or system owner"
+                            IsOkay = true,
+                            Data = _mapper.Map<ProjectGetDto>(newProj)
                         };
                     }
                     return new BaseResponce<ProjectBaseDto>
                     {
                         IsOkay = false,
-                        StatusCode = 404,
-                        Description = "Project not found"
+                        StatusCode = 400,
+                        Description = "User with passed id is not admin or system owner"
                     };
                 }
                 return new BaseResponce<ProjectBaseDto>
                 {
                     IsOkay = false,
-                    StatusCode = 400,
-                    Description = "Passed model is invalid"
+                    StatusCode = 404,
+                    Description = "Project not found"
                 };
             }
             catch (Exception ex)
@@ -190,42 +180,32 @@ namespace TaskManager.API.Services
             }
         }
 
-        public async Task<BaseResponce<IEnumerable<ProjectBaseDto>>> GetAll()
+        public async Task<BaseResponce<IEnumerable<ProjectBaseDto>>> GetAll(string username)
         {
             try
             {
-                var projects = await _projectRepo.GetAll().AsNoTracking()
-                    .Include(p => p.Admin).Include(p => p.Desks).ToListAsync();
-                return new BaseResponce<IEnumerable<ProjectBaseDto>>
+                var user = await _userRepo.GetAll().AsNoTracking().FirstAsync(u => u.Email == username);
+                if (user.Role == UserRole.SystemOwner)
                 {
-                    IsOkay = true,
-                    Data = _mapper.Map<IEnumerable<ProjectGetDto>>(projects)
-                };
-            }
-            catch (Exception ex)
-            {
-                //TODO logging
-                return new BaseResponce<IEnumerable<ProjectBaseDto>>
+                    var projects = await _projectRepo.GetAll().AsNoTracking()
+                        .Include(p => p.Admin).Include(p => p.Desks).ToListAsync();
+                    return new BaseResponce<IEnumerable<ProjectBaseDto>>
+                    {
+                        IsOkay = true,
+                        Data = _mapper.Map<IEnumerable<ProjectGetDto>>(projects)
+                    };
+                }
+                else
                 {
-                    IsOkay = false,
-                    StatusCode = 500,
-                    Description = "Internal server error"
-                };
-            }
-        }
-
-        public async Task<BaseResponce<IEnumerable<ProjectBaseDto>>> GetByUserId(int id)
-        {
-            try
-            {
-                var projects = await _projectRepo.GetAll().AsNoTracking()
-                    .Include(p => p.Admin).Include(p => p.Desks).Include(p => p.ProjectUsers)
-                    .Where(p => p.ProjectUsers.Any(u => u.Id == id)).ToListAsync();
-                return new BaseResponce<IEnumerable<ProjectBaseDto>>
-                {
-                    IsOkay = true,
-                    Data = _mapper.Map<IEnumerable<ProjectGetDto>>(projects)
-                };
+                    var projects = await _projectRepo.GetAll().AsNoTracking()
+                        .Include(p => p.Admin).Include(p => p.Desks).Include(p => p.ProjectUsers)
+                        .Where(p => p.ProjectUsers.Any(u => u.Id == user.Id)).ToListAsync();
+                    return new BaseResponce<IEnumerable<ProjectBaseDto>>
+                    {
+                        IsOkay = true,
+                        Data = _mapper.Map<IEnumerable<ProjectGetDto>>(projects)
+                    };
+                }
             }
             catch (Exception ex)
             {

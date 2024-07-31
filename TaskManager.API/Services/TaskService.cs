@@ -3,7 +3,7 @@ using TaskManager.DTO.Task;
 
 namespace TaskManager.API.Services
 {
-    public class TaskService : IService<TaskBaseDto>
+    public class TaskService : ITaskService
     {
         public Task<BaseResponce<bool>> Create(TaskBaseDto entity)
         {

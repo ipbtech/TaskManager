@@ -11,13 +11,11 @@ namespace TaskManager.API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly UserService _userService;
-        private readonly AccountService _accountService;
+        private readonly IUserService _userService;
 
-        public AccountController(UserService userService, AccountService accService)
+        public AccountController(IUserService userService)
         {
             _userService = userService;
-            _accountService = accService;
         }
 
 
@@ -30,7 +28,7 @@ namespace TaskManager.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var responce = await _accountService.Login(loginDto);
+                var responce = await _userService.Login(loginDto);
                 if (responce.IsOkay)
                     return Ok(responce.Data);
                 else
