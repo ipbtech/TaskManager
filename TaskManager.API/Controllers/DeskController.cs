@@ -76,7 +76,7 @@ namespace TaskManager.API.Controllers
         }
 
 
-        [HttpPatch("delete/{id}")]
+        [HttpDelete("delete/{id}")]
         [Authorize(Roles = "SystemOwner,Admin")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]

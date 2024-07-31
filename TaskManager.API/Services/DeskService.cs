@@ -30,7 +30,7 @@ namespace TaskManager.API.Services
             {
                 var currentUser = await _userRepo.GetAll().AsNoTracking().FirstAsync(u => u.Email == username);
                 var project = await _projectRepo.GetAll().Include(p => p.Desks)
-                    .FirstOrDefaultAsync(p => p.Id == createDto.ProjectId && p.AdminId == currentUser.Id);
+                    .FirstOrDefaultAsync(p => (p.Id == createDto.ProjectId && p.AdminId == currentUser.Id) || currentUser.Role == UserRole.SystemOwner);
                 if (project is not null)
                 {
                     if (!project.Desks.Any(d => d.Name == createDto.Name))
@@ -77,7 +77,7 @@ namespace TaskManager.API.Services
                 var currentUser = await _userRepo.GetAll().AsNoTracking()
                     .Include(u => u.AdminProjects).FirstAsync(u => u.Email == username);
                 var desk = await _deskRepo.GetAll().Include(d => d.Project).FirstOrDefaultAsync(d => d.Id == id);
-                if (desk is not null && desk.Project?.AdminId == currentUser.Id)
+                if (desk is not null && (desk.Project?.AdminId == currentUser.Id || currentUser.Role == UserRole.SystemOwner))
                 {
                     await _deskRepo.Delete(desk);
                     return new BaseResponce<bool>
@@ -112,7 +112,7 @@ namespace TaskManager.API.Services
                 var currentUser = await _userRepo.GetAll().AsNoTracking()
                     .Include(u => u.AdminProjects).FirstAsync(u => u.Email == username);
                 var desk = await _deskRepo.GetAll().Include(p => p.Project).FirstOrDefaultAsync(p => p.Id == id);
-                if (desk is not null && desk.Project?.AdminId == currentUser.Id)
+                if (desk is not null && (desk.Project?.AdminId == currentUser.Id || currentUser.Role == UserRole.SystemOwner))
                 {
                     var project = await _projectRepo.GetAll()
                         .Include(p => p.Desks).FirstOrDefaultAsync(p => p.Id == updateDto.ProjectId);
@@ -199,7 +199,7 @@ namespace TaskManager.API.Services
             try
             {
                 var desks = await _deskRepo.GetAll().AsNoTracking()
-                    .Include(d => d.Project).Include(d => d.Tasks).FirstOrDefaultAsync(d => d.ProjectId == projectId);
+                    .Include(d => d.Project).Include(d => d.Tasks).Where(d => d.ProjectId == projectId).ToListAsync();
                 if (desks is not null)
                 {
                     return new BaseResponce<IEnumerable<DeskBaseDto>>
