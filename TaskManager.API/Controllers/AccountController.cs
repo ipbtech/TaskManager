@@ -41,6 +41,7 @@ namespace TaskManager.API.Controllers
             return BadRequest(new ErrorResponce { Status = 400, ErrorText = "Passed model is invalid" });
         }
 
+
         [HttpGet("info")]
         [Authorize]
         [ProducesResponseType(typeof(UserGetDto), StatusCodes.Status200OK)]

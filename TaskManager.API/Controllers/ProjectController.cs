@@ -109,6 +109,7 @@ namespace TaskManager.API.Controllers
                 });
         }
 
+
         [HttpGet("get/all")]
         [Authorize]
         [ProducesResponseType(typeof(IEnumerable<ProjectGetDto>), StatusCodes.Status200OK)]
@@ -156,6 +157,7 @@ namespace TaskManager.API.Controllers
             }
             return BadRequest(new ErrorResponce { Status = 400, ErrorText = "Passed model is invalid" });
         }
+
 
         [HttpPatch("{projectId}/remove-users")]
         [Authorize(Roles = "SystemOwner,Admin")]
