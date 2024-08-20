@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TaskManager.DTO.Task
+﻿namespace TaskManager.DTO.Task
 {
     public class TaskGetDto : TaskBaseDto
     {
-
+        public int Id { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public int? CreatorId { get; set; }
+        public int DeskId { get; set; }
     }
 
     public class TaskGetShortDto

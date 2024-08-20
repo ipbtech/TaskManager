@@ -55,6 +55,8 @@ namespace TaskManager.Api.Helpers
         private void MapTasks()
         {
             CreateMap<Task, TaskGetShortDto>();
+
+            //dont forget about creatorId
         }
 
 
