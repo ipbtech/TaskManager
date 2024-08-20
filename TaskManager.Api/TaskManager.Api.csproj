@@ -5,7 +5,6 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
-    <DocumentationFile>C:\Users\Илья Петров\Desktop\C#DevoloperFolder\TaskManager\TaskManager.API\TaskManager.API.Doc.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
