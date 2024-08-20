@@ -1,2 +1,2 @@
 # TaskManager
-Client-server application with implementation Task Manager with Kanban desk on WPF 
+Client-server application implementating Kanban desk for managing Tasks
