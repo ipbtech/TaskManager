@@ -1,4 +1,4 @@
-﻿namespace TaskManager.API.Services
+﻿namespace TaskManager.Api.Services
 {
     public interface ITaskService
     {

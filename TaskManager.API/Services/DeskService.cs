@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using TaskManager.API.Helpers;
+using TaskManager.Api.Helpers;
 using TaskManager.Dal.Repository;
 using TaskManager.DAL.Models;
 using TaskManager.DTO.Desk;
 using TaskManager.DTO.Project;
 
-namespace TaskManager.API.Services
+namespace TaskManager.Api.Services
 {
     public class DeskService : IDeskService
     {

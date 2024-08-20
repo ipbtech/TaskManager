@@ -1,4 +1,4 @@
-﻿namespace TaskManager.API.Helpers
+﻿namespace TaskManager.Api.Helpers
 {
     public class BaseResponce<T>
     {

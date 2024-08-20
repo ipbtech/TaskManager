@@ -1,7 +1,7 @@
-﻿using TaskManager.API.Helpers;
+﻿using TaskManager.Api.Helpers;
 using TaskManager.DTO.Desk;
 
-namespace TaskManager.API.Services
+namespace TaskManager.Api.Services
 {
     public interface IDeskService
     {

@@ -1,9 +1,9 @@
-﻿using TaskManager.API.Helpers;
+﻿using TaskManager.Api.Helpers;
 using TaskManager.DTO.Account;
 using TaskManager.DTO.Enums;
 using TaskManager.DTO.User;
 
-namespace TaskManager.API.Services
+namespace TaskManager.Api.Services
 {
     public interface IUserService
     {

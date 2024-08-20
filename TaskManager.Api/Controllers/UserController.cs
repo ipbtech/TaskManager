@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TaskManager.API.Helpers;
-using TaskManager.API.Services;
+using TaskManager.Api.Helpers;
+using TaskManager.Api.Services;
 using TaskManager.DTO.Enums;
 using TaskManager.DTO.User;
 

@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using System.Text.Json;
-using TaskManager.API.Extensions;
+using TaskManager.Api.Extensions;
 using TaskManager.DAL.Models;
 using TaskManager.DTO.Desk;
 using TaskManager.DTO.Project;
 using TaskManager.DTO.Task;
 using TaskManager.DTO.User;
 
-namespace TaskManager.API.Helpers
+namespace TaskManager.Api.Helpers
 {
     public class MappingProfile : Profile
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace TaskManager.API.Extensions
+namespace TaskManager.Api.Extensions
 {
     public static class SwagerGenExtension
     {

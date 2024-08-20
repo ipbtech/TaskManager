@@ -1,7 +1,7 @@
-﻿using TaskManager.API.Helpers;
+﻿using TaskManager.Api.Helpers;
 using TaskManager.DTO.Task;
 
-namespace TaskManager.API.Services
+namespace TaskManager.Api.Services
 {
     public class TaskService : ITaskService
     {

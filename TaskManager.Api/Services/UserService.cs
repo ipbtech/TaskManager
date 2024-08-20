@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using TaskManager.API.Extensions;
-using TaskManager.API.Helpers;
+using TaskManager.Api.Extensions;
+using TaskManager.Api.Helpers;
 using TaskManager.Dal.Repository;
 using TaskManager.DAL.Models;
 using TaskManager.DTO.Account;
 using TaskManager.DTO.User;
 
-namespace TaskManager.API.Services
+namespace TaskManager.Api.Services
 {
     public class UserService : IUserService
     {

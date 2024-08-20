@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using TaskManager.API.Extensions;
-using TaskManager.API.Helpers;
-using TaskManager.API.Services;
+using TaskManager.Api.Extensions;
+using TaskManager.Api.Helpers;
+using TaskManager.Api.Services;
 using TaskManager.Dal;
 using TaskManager.Dal.Repository;
 using TaskManager.DAL.EF.Repository;

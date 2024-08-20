@@ -1,7 +1,7 @@
-﻿using TaskManager.API.Helpers;
+﻿using TaskManager.Api.Helpers;
 using TaskManager.DTO.Project;
 
-namespace TaskManager.API.Services
+namespace TaskManager.Api.Services
 {
     public interface IProjectService 
     {
