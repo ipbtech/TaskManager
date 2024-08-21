@@ -64,7 +64,7 @@ namespace TaskManager.Api.Controllers
         }
 
 
-        [HttpPatch("update/{id}")]
+        [HttpPut("update/{id}")]
         [Authorize(Roles = "SystemOwner,Admin")]
         [ProducesResponseType(typeof(ProjectGetDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]

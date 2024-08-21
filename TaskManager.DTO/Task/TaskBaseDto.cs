@@ -21,9 +21,5 @@ namespace TaskManager.DTO.Task
         public DateTime? EndDate { get; set; }
 
         public int? ContractorId { get; set; }
-
-
-        [Base64String]
-        public string? ImageAsBase64 { get; set; }
     }
 }

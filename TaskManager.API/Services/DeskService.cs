@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using TaskManager.Api.Helpers;
 using TaskManager.Dal.Repository;
 using TaskManager.DAL.Models;
 using TaskManager.DTO.Desk;
-using TaskManager.DTO.Project;
+using TaskManager.DTO.Desk.ColumnDesk;
 
 namespace TaskManager.Api.Services
 {
@@ -12,11 +13,13 @@ namespace TaskManager.Api.Services
     {
         private readonly IRepository<Desk> _deskRepo;
         private readonly IRepository<Project> _projectRepo;
+        private readonly IRepository<WorkTask> _taskRepo;
         private readonly IRepository<User> _userRepo;
         private readonly IMapper _mapper;
 
-        public DeskService(IRepository<Desk> deskRepo, IRepository<Project> projectRepo, IRepository<User> userRepo, IMapper mapper)
+        public DeskService(IRepository<Desk> deskRepo, IRepository<WorkTask> taskRepo, IRepository<Project> projectRepo, IRepository<User> userRepo, IMapper mapper)
         {
+            _taskRepo = taskRepo;
             _deskRepo = deskRepo;
             _projectRepo = projectRepo;
             _userRepo = userRepo;
@@ -225,6 +228,150 @@ namespace TaskManager.Api.Services
                     Description = "Internal server error"
                 };
             }
+        }
+
+        public async Task<BaseResponce<bool>> AddColumnDesk(AddingColumnDto entity, string username)
+        {
+            try
+            {
+                var currentUser = await _userRepo.GetAll().AsNoTracking()
+                    .Include(u => u.AdminProjects).FirstAsync(u => u.Email == username);
+                var desk = await _deskRepo.GetAll().Include(d => d.Project).FirstOrDefaultAsync(d => d.Id == entity.DeskId);
+                if (desk is not null && (desk.Project?.AdminId == currentUser.Id || currentUser.Role == UserRole.SystemOwner))
+                {
+                    var columns = JsonSerializer.Deserialize<List<string>>(desk.DeskColumns);
+                    columns?.Add(entity.Name);
+                    desk.DeskColumns = JsonSerializer.Serialize(columns);
+                    await _deskRepo.Update(desk);
+                    return new BaseResponce<bool>
+                    {
+                        IsOkay = true,
+                        Data = true
+                    };
+                }
+                return new BaseResponce<bool>
+                {
+                    IsOkay = false,
+                    StatusCode = 404,
+                    Description = "Desk not found or current user is not admin of the project"
+                };
+            }
+            catch (Exception ex)
+            {
+                //TODO logging
+                return new BaseResponce<bool>
+                {
+                    IsOkay = false,
+                    StatusCode = 500,
+                    Description = "Internal server error"
+                };
+            }
+        }
+
+        public async Task<BaseResponce<bool>> UpdateColumnDesk(UpdatingColumnDto entity, string username)
+        {
+            try
+            {
+                var currentUser = await _userRepo.GetAll().AsNoTracking()
+                    .Include(u => u.AdminProjects).FirstAsync(u => u.Email == username);
+                var desk = await _deskRepo.GetAll().Include(d => d.Project).Include(d => d.Tasks).FirstOrDefaultAsync(d => d.Id == entity.DeskId);
+                if (desk is not null && (desk.Project?.AdminId == currentUser.Id || currentUser.Role == UserRole.SystemOwner))
+                {
+                    var columns = JsonSerializer.Deserialize<List<string>>(desk.DeskColumns);
+
+                    var ind = columns.FindIndex(e => e == entity.OldName);
+                    columns?.Remove(entity.OldName);
+                    columns?.Insert(ind, entity.NewName);
+
+                    desk.DeskColumns = JsonSerializer.Serialize(columns);
+                    await _deskRepo.Update(desk);
+
+                    var tasksUpdating = desk.Tasks.Where(t => t.ColumnOfDesk == entity.OldName)
+                        .Select(t => UpdateDeskColumnsTasks(t, entity.NewName)).ToArray();
+                    await Task.WhenAll(tasksUpdating);
+
+                    return new BaseResponce<bool>
+                    {
+                        IsOkay = true,
+                        Data = true
+                    };
+                }
+                return new BaseResponce<bool>
+                {
+                    IsOkay = false,
+                    StatusCode = 404,
+                    Description = "Desk not found or current user is not admin of the project"
+                };
+            }
+            catch (Exception ex)
+            {
+                //TODO logging
+                return new BaseResponce<bool>
+                {
+                    IsOkay = false,
+                    StatusCode = 500,
+                    Description = "Internal server error"
+                };
+            }
+        }
+
+        public async Task<BaseResponce<bool>> DeleteColumnDesk(DeletingColumnDto entity, string username)
+        {
+            try
+            {
+                var currentUser = await _userRepo.GetAll().AsNoTracking()
+                    .Include(u => u.AdminProjects).FirstAsync(u => u.Email == username);
+                var desk = await _deskRepo.GetAll().Include(d => d.Project).Include(d => d.Tasks).FirstOrDefaultAsync(d => d.Id == entity.DeskId);
+                if (desk is not null && (desk.Project?.AdminId == currentUser.Id || currentUser.Role == UserRole.SystemOwner))
+                {
+                    var columns = JsonSerializer.Deserialize<List<string>>(desk.DeskColumns);
+                    columns?.Remove(entity.Name);
+                    var defaultCol = columns?.FirstOrDefault();
+                    if (defaultCol is not null)
+                    {
+                        desk.DeskColumns = JsonSerializer.Serialize(columns);
+                        await _deskRepo.Update(desk);
+
+                        var tasksUpdating = desk.Tasks.Where(t => t.ColumnOfDesk == entity.Name)
+                            .Select(t => UpdateDeskColumnsTasks(t, defaultCol)).ToArray();
+                        await Task.WhenAll(tasksUpdating);
+
+                        return new BaseResponce<bool>
+                        {
+                            IsOkay = true,
+                            Data = true
+                        };
+                    }
+                    return new BaseResponce<bool>
+                    {
+                        IsOkay = false,
+                        StatusCode = 400,
+                        Description = "Can't delete last column"
+                    };
+                }
+                return new BaseResponce<bool>
+                {
+                    IsOkay = false,
+                    StatusCode = 404,
+                    Description = "Desk not found or current user is not admin of the project"
+                };
+            }
+            catch (Exception ex)
+            {
+                //TODO logging
+                return new BaseResponce<bool>
+                {
+                    IsOkay = false,
+                    StatusCode = 500,
+                    Description = "Internal server error"
+                };
+            }
+        }
+
+        private async Task UpdateDeskColumnsTasks(WorkTask task, string newName)
+        {
+            task.ColumnOfDesk = newName;
+            await _taskRepo.Update(task);
         }
     }
 }

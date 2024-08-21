@@ -1,11 +1,21 @@
 ﻿using TaskManager.Api.Helpers;
+using TaskManager.Dal.Repository;
+using TaskManager.DAL.Models;
 using TaskManager.DTO.Task;
 
 namespace TaskManager.Api.Services
 {
     public class TaskService : ITaskService
     {
-        public Task<BaseResponce<bool>> Create(TaskBaseDto entity)
+        private readonly IRepository<WorkTask> _taskRepo;
+
+        public TaskService(IRepository<WorkTask> taskRepo)
+        {
+            _taskRepo = taskRepo;
+        }
+        
+        
+        public Task<BaseResponce<bool>> Create(TaskCreateDto createDto)
         {
             throw new NotImplementedException();
         }
@@ -20,12 +30,22 @@ namespace TaskManager.Api.Services
             throw new NotImplementedException();
         }
 
-        public Task<BaseResponce<IEnumerable<TaskBaseDto>>> GetAll()
+        public Task<BaseResponce<TaskBaseDto>> GetByDesk(int deskId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<BaseResponce<TaskBaseDto>> Update(int id, TaskBaseDto entity)
+        public Task<BaseResponce<TaskBaseDto>> GetByProject(int projectId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BaseResponce<TaskBaseDto>> GetByUser(string username)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BaseResponce<TaskBaseDto>> Update(int id, TaskUpdateDto updateDto)
         {
             throw new NotImplementedException();
         }

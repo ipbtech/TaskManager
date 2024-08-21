@@ -6,6 +6,7 @@ namespace TaskManager.DTO.Desk
     public  class DeskGetDto : DeskBaseDto
     {
         public int Id { get; set; }
+        public List<string>? DeskColumns { get; set; }
         public ProjectGetShortDto Project { get; set; }
         public List<TaskGetShortDto> Tasks { get; set; }
     }

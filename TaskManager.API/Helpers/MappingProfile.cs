@@ -22,10 +22,10 @@ namespace TaskManager.Api.Helpers
         
         private void MapUsers()
         {
-            CreateMap<UserUpdateDto, User>();
             CreateMap<User, UserGetDto>();
-            CreateMap<UserCreateDto, User>().ForMember(u => u.HashPassword, opt => opt.MapFrom(u => u.Password.HashSha256()));
             CreateMap<User, AdminGetDto>();
+            CreateMap<UserCreateDto, User>().ForMember(u => u.HashPassword, opt => opt.MapFrom(u => u.Password.HashSha256()));
+            CreateMap<UserUpdateDto, User>();
         }
         private void MapProjects()
         {
@@ -45,16 +45,21 @@ namespace TaskManager.Api.Helpers
         {
             CreateMap<Desk, DeskGetShortDto>();
             CreateMap<Desk, DeskGetDto>()
-                .ForMember(d => d.DeskColumns, opt => opt.MapFrom(d => Deserialize(d.DeskColumns)));
+                .ForMember(d => d.DeskColumns, opt => opt.MapFrom(d => DeserializeDeskColumns(d.DeskColumns)));
 
             CreateMap<DeskCreateDto, Desk>()
-                .ForMember(d => d.DeskColumns, opt => opt.MapFrom(d => Serialize(d.DeskColumns)));
+                .ForMember(d => d.DeskColumns, opt => opt.MapFrom(d => SerializeEmptyDeskColumns()));
             CreateMap<DeskUpdateDto, Desk>()
-                .ForMember(d => d.DeskColumns, opt => opt.MapFrom(d => Serialize(d.DeskColumns)));
+                .ForMember(d => d.DeskColumns, opt => opt.UseDestinationValue())
+                .ForMember(d => d.CreatedDate, opt => opt.UseDestinationValue());
         }
         private void MapTasks()
         {
-            CreateMap<Task, TaskGetShortDto>();
+            CreateMap<WorkTask, TaskGetShortDto>();
+            CreateMap<WorkTask, TaskGetDto>();
+
+            CreateMap<TaskCreateDto, WorkTask>();
+            CreateMap<TaskUpdateDto, WorkTask>();
 
             //dont forget about creatorId
         }
@@ -62,12 +67,7 @@ namespace TaskManager.Api.Helpers
 
         private byte[] ConvertBase64String(string? src) => src is not null ? Convert.FromBase64String(src) : new byte[] {0};
 
-        private string Serialize(List<string>? data)
-        {
-            if (data is not null && data.Any())
-                return JsonSerializer.Serialize(data);
-            return JsonSerializer.Serialize(new List<string> { "New" });
-        }
-        private List<string> Deserialize(string data) => JsonSerializer.Deserialize<List<string>>(data);
+        private string SerializeEmptyDeskColumns() => JsonSerializer.Serialize(new List<string> { "New" });
+        private List<string> DeserializeDeskColumns(string data) => JsonSerializer.Deserialize<List<string>>(data);
     }
 }

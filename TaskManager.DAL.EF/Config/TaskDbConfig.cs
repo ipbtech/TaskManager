@@ -13,7 +13,6 @@ namespace TaskManager.Dal.Config
             builder.Property(task => task.Description).HasColumnName("description").HasMaxLength(200);
             builder.Property(task => task.CreatedDate).HasColumnName("create_date").IsRequired();
             builder.Property(task => task.ColumnOfDesk).HasColumnName("column").IsRequired();
-            builder.Property(task => task.AttachmentsData).HasColumnName("attachments");
             builder.Ignore(task => task.Image);
 
             builder.Property(task => task.StartDate).HasColumnName("start_date");

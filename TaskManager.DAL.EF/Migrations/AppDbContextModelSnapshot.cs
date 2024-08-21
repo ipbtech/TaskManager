@@ -194,7 +194,7 @@ namespace TaskManager.Api.Migrations
                             LastLoginDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LastName = "admin",
                             Password = "qwerty",
-                            RegistrDate = new DateTime(2024, 7, 29, 11, 3, 46, 171, DateTimeKind.Local).AddTicks(2875),
+                            RegistrDate = new DateTime(2024, 8, 21, 15, 55, 1, 950, DateTimeKind.Local).AddTicks(4058),
                             Role = 3
                         });
                 });
@@ -207,10 +207,6 @@ namespace TaskManager.Api.Migrations
                         .HasColumnName("id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<byte[]>("AttachmentsData")
-                        .HasColumnType("varbinary(max)")
-                        .HasColumnName("attachments");
 
                     b.Property<string>("ColumnOfDesk")
                         .IsRequired()

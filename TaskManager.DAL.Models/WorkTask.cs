@@ -6,7 +6,9 @@
         public Desk? Desk { get; set; }
         
         public string? ColumnOfDesk { get; set; }
-        public byte[]? AttachmentsData { get; set; }
+
+        //public List<TaskAttachment> AttachmentsData { get; set; }
+        //TODO Добавить возможность работы с вложениями и комментариями к задаче
 
         public int? CreatorId { get; set; }
         public User? Creator { get; set; }

@@ -10,7 +10,5 @@ namespace TaskManager.DTO.Desk
 
         [MaxLength(200)]
         public string? Description { get; set; }
-
-        public List<string>? DeskColumns { get; set; }
     }
 }

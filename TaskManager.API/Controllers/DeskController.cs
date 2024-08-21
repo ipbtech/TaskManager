@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TaskManager.Api.Helpers;
 using TaskManager.Api.Services;
 using TaskManager.DTO.Desk;
+using TaskManager.DTO.Desk.ColumnDesk;
 
 namespace TaskManager.Api.Controllers
 {
@@ -32,7 +33,7 @@ namespace TaskManager.Api.Controllers
             string? username = HttpContext.User.Identity?.Name;
             if (string.IsNullOrEmpty(username))
                 return Unauthorized();
-            
+
             if (ModelState.IsValid)
             {
                 var responce = await _deskService.Create(createDto, username);
@@ -49,7 +50,7 @@ namespace TaskManager.Api.Controllers
         }
 
 
-        [HttpPatch("update/{id}")]
+        [HttpPut("update/{id}")]
         [Authorize(Roles = "SystemOwner,Admin")]
         [ProducesResponseType(typeof(DeskGetDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
@@ -132,6 +133,81 @@ namespace TaskManager.Api.Controllers
         public async Task<IActionResult> GetByProject(int projectId)
         {
             var responce = await _deskService.GetByProjectId(projectId);
+            if (responce.IsOkay)
+                return Ok(responce.Data);
+            else
+                return StatusCode(responce.StatusCode, new ErrorResponce
+                {
+                    Status = responce.StatusCode,
+                    ErrorText = responce.Description
+                });
+        }
+
+
+        [HttpPatch("columns/add")]
+        [Authorize(Roles = "SystemOwner,Admin")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddColumnDesk([FromBody] AddingColumnDto columnDto)
+        {
+            string? username = HttpContext.User.Identity?.Name;
+            if (string.IsNullOrEmpty(username))
+                return Unauthorized();
+
+            var responce = await _deskService.AddColumnDesk(columnDto, username);
+            if (responce.IsOkay)
+                return Ok(responce.Data);
+            else
+                return StatusCode(responce.StatusCode, new ErrorResponce
+                {
+                    Status = responce.StatusCode,
+                    ErrorText = responce.Description
+                });
+        }
+
+        [HttpPatch("columns/update")]
+        [Authorize(Roles = "SystemOwner,Admin")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateColumnDesk([FromBody] UpdatingColumnDto columnDto)
+        {
+            string? username = HttpContext.User.Identity?.Name;
+            if (string.IsNullOrEmpty(username))
+                return Unauthorized();
+
+            var responce = await _deskService.UpdateColumnDesk(columnDto, username);
+            if (responce.IsOkay)
+                return Ok(responce.Data);
+            else
+                return StatusCode(responce.StatusCode, new ErrorResponce
+                {
+                    Status = responce.StatusCode,
+                    ErrorText = responce.Description
+                });
+        }
+
+
+        [HttpPatch("columns/delete")]
+        [Authorize(Roles = "SystemOwner,Admin")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteColumnDesk([FromBody] DeletingColumnDto columnDto)
+        {
+            string? username = HttpContext.User.Identity?.Name;
+            if (string.IsNullOrEmpty(username))
+                return Unauthorized();
+
+            var responce = await _deskService.DeleteColumnDesk(columnDto, username);
             if (responce.IsOkay)
                 return Ok(responce.Data);
             else

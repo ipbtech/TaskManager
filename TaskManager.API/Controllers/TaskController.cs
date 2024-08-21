@@ -29,7 +29,40 @@ namespace TaskManager.API.Controllers
         [ProducesResponseType(typeof(ErrorResponce), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] TaskCreateDto createDto)
         {
+            return Ok();
+        }
 
+
+        public async Task<IActionResult> Update(int id, [FromBody] TaskUpdateDto updateDto)
+        {
+            return Ok();
+        }
+
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            return Ok();
+        }
+
+
+        public async Task<IActionResult> Get(int id)
+        {
+            return Ok();
+        }
+
+        public async Task<IActionResult> GetByProject(int projectId)
+        {
+            return Ok();
+        }
+
+        public async Task<IActionResult> GetByDesk(int deskId)
+        {
+            return Ok();
+        }
+
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            return Ok();
         }
     }
 }
