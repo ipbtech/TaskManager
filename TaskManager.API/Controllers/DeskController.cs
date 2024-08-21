@@ -157,15 +157,19 @@ namespace TaskManager.Api.Controllers
             if (string.IsNullOrEmpty(username))
                 return Unauthorized();
 
-            var responce = await _deskService.AddColumnDesk(columnDto, username);
-            if (responce.IsOkay)
-                return Ok(responce.Data);
-            else
-                return StatusCode(responce.StatusCode, new ErrorResponce
-                {
-                    Status = responce.StatusCode,
-                    ErrorText = responce.Description
-                });
+            if (ModelState.IsValid)
+            {
+                var responce = await _deskService.AddColumnDesk(columnDto, username);
+                if (responce.IsOkay)
+                    return Ok(responce.Data);
+                else
+                    return StatusCode(responce.StatusCode, new ErrorResponce
+                    {
+                        Status = responce.StatusCode,
+                        ErrorText = responce.Description
+                    });
+            }
+            return BadRequest(new ErrorResponce { Status = 400, ErrorText = "Passed model is invalid" });
         }
 
         [HttpPatch("columns/update")]
@@ -181,15 +185,19 @@ namespace TaskManager.Api.Controllers
             if (string.IsNullOrEmpty(username))
                 return Unauthorized();
 
-            var responce = await _deskService.UpdateColumnDesk(columnDto, username);
-            if (responce.IsOkay)
-                return Ok(responce.Data);
-            else
-                return StatusCode(responce.StatusCode, new ErrorResponce
-                {
-                    Status = responce.StatusCode,
-                    ErrorText = responce.Description
-                });
+            if (ModelState.IsValid)
+            {
+                var responce = await _deskService.UpdateColumnDesk(columnDto, username);
+                if (responce.IsOkay)
+                    return Ok(responce.Data);
+                else
+                    return StatusCode(responce.StatusCode, new ErrorResponce
+                    {
+                        Status = responce.StatusCode,
+                        ErrorText = responce.Description
+                    });
+            }
+            return BadRequest(new ErrorResponce { Status = 400, ErrorText = "Passed model is invalid" });
         }
 
 
@@ -207,15 +215,19 @@ namespace TaskManager.Api.Controllers
             if (string.IsNullOrEmpty(username))
                 return Unauthorized();
 
-            var responce = await _deskService.DeleteColumnDesk(columnDto, username);
-            if (responce.IsOkay)
-                return Ok(responce.Data);
-            else
-                return StatusCode(responce.StatusCode, new ErrorResponce
-                {
-                    Status = responce.StatusCode,
-                    ErrorText = responce.Description
-                });
+            if (ModelState.IsValid)
+            {
+                var responce = await _deskService.DeleteColumnDesk(columnDto, username);
+                if (responce.IsOkay)
+                    return Ok(responce.Data);
+                else
+                    return StatusCode(responce.StatusCode, new ErrorResponce
+                    {
+                        Status = responce.StatusCode,
+                        ErrorText = responce.Description
+                    });
+            }
+            return BadRequest(new ErrorResponce { Status = 400, ErrorText = "Passed model is invalid" });
         }
     }
 }

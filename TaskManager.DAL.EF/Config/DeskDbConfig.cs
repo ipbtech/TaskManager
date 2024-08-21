@@ -13,6 +13,7 @@ namespace TaskManager.Dal.Config
             builder.Property(desk => desk.Description).HasColumnName("description").HasMaxLength(200);
             builder.Property(desk => desk.DeskColumns).HasColumnName("desk_columns").IsRequired();
             builder.Ignore(desk => desk.CreatedDate);
+            builder.Ignore(desk => desk.StartDate);
             builder.Ignore(desk => desk.EndDate);
             builder.Ignore(desk => desk.Image);
 

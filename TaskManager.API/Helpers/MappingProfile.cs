@@ -59,9 +59,9 @@ namespace TaskManager.Api.Helpers
             CreateMap<WorkTask, TaskGetDto>();
 
             CreateMap<TaskCreateDto, WorkTask>();
-            CreateMap<TaskUpdateDto, WorkTask>();
-
-            //dont forget about creatorId
+            CreateMap<TaskUpdateDto, WorkTask>()
+                .ForMember(d => d.CreatedDate, opt => opt.UseDestinationValue())
+                .ForMember(d => d.CreatorId, opt => opt.UseDestinationValue());
         }
 
 

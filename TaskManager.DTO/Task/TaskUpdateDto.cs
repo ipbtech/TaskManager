@@ -1,5 +1,5 @@
 ﻿namespace TaskManager.DTO.Task
 {
-    public class TaskUpdateDto : TaskBaseDto
+    public class TaskUpdateDto : TaskCreateDto
     { }
 }
